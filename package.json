@@ -1,0 +1,21 @@
+{
+  "name": "firstbloodtoken",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "async": "^2.0.1",
+    "command-line-args": "^3.0.1",
+    "ethereumjs-abi": "^0.6.3",
+    "ethereumjs-testrpc": "^2.1.0",
+    "fs": "0.0.2",
+    "request": "^2.74.0",
+    "solc": "^0.3.6",
+    "web3": "^0.17.0-alpha"
+  }
+}
