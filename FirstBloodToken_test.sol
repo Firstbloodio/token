@@ -139,12 +139,14 @@ contract FirstBloodToken is StandardToken, SafeMath {
       blockNumber = blockNumberInput;
     }
     function price() constant returns(uint) {
-        if (blockNumber<startBlock || blockNumber>endBlock) return 100;
-        return 100 + 4*(endBlock - blockNumber)/(endBlock - startBlock + 1)*67/4;
+        if (blockNumber>=startBlock && blockNumber<startBlock+250) return 170; //power hour
+        if (blockNumber<startBlock || blockNumber>endBlock) return 100; //default price
+        return 100 + 4*(endBlock - blockNumber)/(endBlock - startBlock + 1)*67/4; //crowdsale price
     }
     function testPrice(uint blockNumber) constant returns(uint) {
-        if (blockNumber<startBlock || blockNumber>endBlock) return 100;
-        return 100 + 4*(endBlock - blockNumber)/(endBlock - startBlock + 1)*67/4;
+        if (blockNumber>=startBlock && blockNumber<startBlock+250) return 170; //power hour
+        if (blockNumber<startBlock || blockNumber>endBlock) return 100; //default price
+        return 100 + 4*(endBlock - blockNumber)/(endBlock - startBlock + 1)*67/4; //crowdsale price
     }
     function buy() {
         if (buyLocked || blockNumber<startBlock) throw;

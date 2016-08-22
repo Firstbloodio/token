@@ -61,33 +61,6 @@ describe('Smart contract token test ', function() {
     });
   });
 
-  // it('Increment the block number', function(done) {
-  //   //This is stupid but we need testrpc to have the same block number as Ethereum...
-  //   var blockNumber = 0;
-  //   async.until(
-  //     function() { blockNumber>=1000 },
-  //     function(callbackUntil) {
-  //       console.log('here')
-  //       web3.eth.getBlockNumber(function(err, result){
-  //         console.log("current block:",err, result);
-  //         blockNumber = result;
-  //         setTimeout(function(){
-  //           callbackUntil();
-  //         }, 1*1000);
-  //       });
-  //     },
-  //     function(err) {
-  //       console.log('Done');
-  //       done();
-  //     }
-  //   );
-  //   // for (var i=0; i<startBlock; i++) {
-  //   //   if (i % 10000 == 0) console.log(i);
-  //   //   web3.eth.sendTransaction({from: accounts[0], to: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
-  //   //   });
-  //   // }
-  // });
-
   it('Set up test cases', function(done){
     var blockNumber = startBlock;
     testCases = [];
@@ -95,7 +68,9 @@ describe('Smart contract token test ', function() {
     for (i=0; i<numBlocks; i++) {
       var blockNumber = Math.round(startBlock + (endBlock-startBlock)*i/(numBlocks-1));
       var expectedPrice;
-      if (blockNumber>endBlock || blockNumber<startBlock) {
+      if (blockNumber>=startBlock && blockNumber<startBlock+250) {
+        expectedPrice = 170;
+      } else if (blockNumber>endBlock || blockNumber<startBlock) {
         expectedPrice = 100;
       } else {
         //must use Math.floor to simulate Solidity's integer division
