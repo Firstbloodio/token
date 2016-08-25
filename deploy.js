@@ -43,21 +43,9 @@ if (cliOptions.help) {
 	    var contract = web3.eth.contract(abi);
 	    var contractInstance = contract.new(founder, cliOptions.start_block, cliOptions.end_block, {from: address, gas: 4000000, data: bytecode}, function(err, myContract){
 	      if(!err) {
-	        var contractAddress;
-	        async.until(
-	          function(){return contractAddress},
-	          function(callbackUntil) {
-	            web3.eth.getTransactionReceipt(myContract.transactionHash, function(err, result){
-	              if (result) {
-	                contractAddress = result.contractAddress;
-	              }
-	              setTimeout(function(){callbackUntil(null, contractAddress)}, 1000);
-	            });
-	          },
-	          function(err, result) {
-	            console.log(result);
-	          }
-	        );
+					if (myContract.address) {
+						console.log(myContract.address);
+					}
 	      }
 	    });
 	  });
