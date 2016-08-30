@@ -126,27 +126,11 @@ describe('Smart contract token test ', function() {
     );
   });
 
-  it('Test buy lock', function(done) {
-    contract.buyLock({from: founder, value: 0}, function(err, result){
-      assert.equal(err, null);
-      contract.buyLocked(function(err, result){
-        assert.equal(result, true);
-        contract.buyUnlock({from: founder, value: 0}, function(err, result){
-          contract.buyLocked(function(err, result){
-            assert.equal(result, false);
-            assert.equal(err, null);
-            done();
-          });
-        });
-      });
-    });
-  });
-
-  it('Test buying when buy locked', function(done) {
-    contract.buyLock({from: founder, value: 0}, function(err, result){
+  it('Test buying after the sale ends', function(done) {
+    contract.setBlockNumber(endBlock+1, {from: accounts[0], value: 0}, function(err, result){
       assert.equal(err, null);
       contract.buy({from: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
-        assert.equal(err!=undefined, true);
+        assert.equal(!err, false);
         done();
       });
     });
@@ -156,7 +140,7 @@ describe('Smart contract token test ', function() {
     var hacker = accounts[12];
     var withdrawTo = accounts[12];
     contract.withdraw(withdrawTo, {from: hacker, value: 0}, function(err, result){
-      assert.equal(err!=undefined, true);
+      assert.equal(!err, false);
       done();
     });
   });
@@ -183,30 +167,69 @@ describe('Smart contract token test ', function() {
     });
   });
 
+  it('Test bounty and ecosystem allocation', function(done) {
+    contract.totalSupply(function(err, result){
+      var totalSupply = result;
+      var expectedChange = new BigNumber(totalSupply).div(20).add((new BigNumber(2500000)).times(unit));
+      var blockNumber = endBlock + 1;
+      contract.balanceOf(founder, function(err, balance){
+        var initialFounderBalance = balance;
+        contract.setBlockNumber(blockNumber, {from: founder, value: 0}, function(err, result){
+          assert.equal(err, null);
+          contract.allocateBountyAndEcosystemTokens({from: founder, value: 0}, function(err, result){
+            contract.balanceOf(founder, function(err, balance){
+              var finalFounderBalance = balance;
+              assert.equal(err, null);
+              assert.equal(finalFounderBalance.minus(initialFounderBalance).equals(new BigNumber(expectedChange)), true);
+              done();
+            });
+          });
+        });
+      });
+    });
+  });
+
+  it('Test bounty and ecosystem allocation twice', function(done) {
+    contract.allocateBountyAndEcosystemTokens({from: founder, value: 0}, function(err, result){
+      assert.equal(!err, false);
+      done();
+    });
+  });
+
   it('Test founder token allocation too early', function(done) {
     var blockNumber = endBlock + 86400/14 * 366;
     contract.allocateFounderTokens({from: founder, value: 0}, function(err, result){
-      assert.equal(err!=undefined, true);
+      assert.equal(!err, false);
       done();
     });
   });
 
   it('Test founder token allocation on time', function(done) {
-    var expectedFounderAllocation = 7500000;
-    var blockNumber = endBlock + 86400/14 * 366;
-    contract.balanceOf(founder, function(err, balance){
-      var initialFounderBalance = balance;
-      contract.setBlockNumber(blockNumber, {from: founder, value: 0}, function(err, result){
-        assert.equal(err, null);
-        contract.allocateFounderTokens({from: founder, value: 0}, function(err, result){
-          contract.balanceOf(founder, function(err, balance){
-            var finalFounderBalance = balance;
-            assert.equal(err, null);
-            assert.equal(finalFounderBalance.minus(initialFounderBalance).equals(unit.times(new BigNumber(expectedFounderAllocation))), true);
-            done();
+    contract.presaleTokenSupply(function(err, result){
+      var totalSupply = result;
+      var expectedFounderAllocation = new BigNumber(totalSupply).div(10);
+      var blockNumber = endBlock + 86400/14 * 366;
+      contract.balanceOf(founder, function(err, balance){
+        var initialFounderBalance = balance;
+        contract.setBlockNumber(blockNumber, {from: founder, value: 0}, function(err, result){
+          assert.equal(err, null);
+          contract.allocateFounderTokens({from: founder, value: 0}, function(err, result){
+            contract.balanceOf(founder, function(err, balance){
+              var finalFounderBalance = balance;
+              assert.equal(err, null);
+              assert.equal(finalFounderBalance.minus(initialFounderBalance).equals(expectedFounderAllocation), true);
+              done();
+            });
           });
         });
       });
+    });
+  });
+
+  it('Test founder token allocation twice', function(done) {
+    contract.allocateFounderTokens({from: founder, value: 0}, function(err, result){
+      assert.equal(!err, false);
+      done();
     });
   });
 
@@ -214,7 +237,7 @@ describe('Smart contract token test ', function() {
     var newFounder = accounts[1];
     var hacker = accounts[1];
     contract.changeFounder(newFounder, {from: hacker, value: 0}, function(err, result){
-      assert.equal(err!=undefined, true);
+      assert.equal(!err, false);
       done();
     });
   });
@@ -226,6 +249,33 @@ describe('Smart contract token test ', function() {
       contract.founder(function(err, result){
         assert.equal(err, null);
         assert.equal(result, newFounder);
+        done();
+      });
+    });
+  });
+
+  it('Test restricted early transfer', function(done) {
+    var account3 = accounts[3];
+    var account4 = accounts[4];
+    var amount = web3.toWei(1, "ether");
+    var blockNumber = endBlock + 100;
+    contract.setBlockNumber(blockNumber, {from: founder, value: 0}, function(err, result){
+      contract.transfer(account3, amount, {from: account4, value: 0}, function(err, result){
+        assert.equal(!err, false);
+        done();
+      });
+    });
+  });
+
+  it('Test transfer after restricted period', function(done) {
+    var account3 = accounts[3];
+    var account4 = accounts[4];
+    var amount = web3.toWei(1, "ether");
+    var blockNumber = Math.round(endBlock + 61*86400/14);
+    contract.setBlockNumber(blockNumber, {from: founder, value: 0}, function(err, result){
+      assert.equal(err, null);
+      contract.transfer(account3, amount, {from: account4, value: 0}, function(err, result){
+        assert.equal(err, null);
         done();
       });
     });
