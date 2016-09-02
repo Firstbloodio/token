@@ -5,12 +5,13 @@ var async = require('async');
 var ethabi = require('ethereumjs-abi');
 var commandLineArgs = require('command-line-args');
 
-var cliOptions = commandLineArgs([
+var cli = commandLineArgs([
 	{ name: 'help', alias: 'h', type: Boolean },
 	{ name: 'address', type: String },
   { name: 'start_block', type: Number},
 	{ name: 'end_block', type: Number},
 ]);
+var cliOptions = cli.parse();
 
 if (cliOptions.help) {
 	console.log(cli.getUsage());

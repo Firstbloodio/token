@@ -10,7 +10,7 @@
   "dependencies": {
     "assert": "^1.4.1",
     "async": "^2.0.1",
-    "command-line-args": "^3.0.1",
+    "command-line-args": "^2.1.6",
     "ethereumjs-abi": "^0.6.3",
     "ethereumjs-testrpc": "^2.1.0",
     "fs": "0.0.2",
