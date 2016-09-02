@@ -89,6 +89,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     uint public startBlock;
     uint public endBlock;
     address public founder = 0x0;
+    uint public etherCap = 600000 * 10**18; //600k Ether is approximately 6.5M
     uint public transferLockup = 370285; //2 months assuming 14 second blocks
     uint public founderLockup = 2252571; //365 days assuming 14 second blocks
     uint public bountyAllocation = 2500000 * 10**18; //2.5M tokens
@@ -123,6 +124,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
 
     function buy() {
         if (block.number<startBlock || block.number>endBlock) throw;
+        if (this.balance>etherCap) throw;
         balances[msg.sender] = safeAdd(balances[msg.sender], safeMul(msg.value, price()));
         totalSupply = safeAdd(totalSupply, safeMul(msg.value, price()));
         Buy(msg.sender, msg.value, safeMul(msg.value, price()));
@@ -155,6 +157,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
 
     function withdraw(address to) {
         if (msg.sender!=founder) throw;
+        if (block.number <= endBlock) throw;
         Withdraw(msg.sender, to, this.balance);
         if (!to.call.value(this.balance)()) throw;
     }

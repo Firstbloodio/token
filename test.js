@@ -145,21 +145,33 @@ describe('Smart contract token test ', function() {
     });
   });
 
+  it('Test founder withdraw early', function(done) {
+    var withdrawTo = accounts[11];
+    contract.setBlockNumber(endBlock-1, {from: accounts[0], value: 0}, function(err, result){
+      contract.withdraw(withdrawTo, {from: founder, value: 0}, function(err, result){
+        assert.equal(!err, false);
+        done();
+      });
+    });
+  });
+
   it('Test founder withdraw', function(done) {
     var withdrawTo = accounts[11];
-    web3.eth.getBalance(contractAddress, function(err, balance){
-      var initialContractEtherBalance = balance;
-      web3.eth.getBalance(withdrawTo, function(err, balance){
-        var initialBalance = balance;
-        contract.withdraw(withdrawTo, {from: founder, value: 0}, function(err, result){
-          web3.eth.getBalance(withdrawTo, function(err, balance){
-            var finalBalance = balance;
-            web3.eth.getBalance(contractAddress, function(err, balance){
-              var finalContractEtherBalance = balance;
-              assert.equal(err, null);
-              assert.equal(finalBalance.minus(initialBalance).equals(initialContractEtherBalance), true);
-              assert.equal(finalContractEtherBalance.equals(new BigNumber(0)), true);
-              done();
+    contract.setBlockNumber(endBlock+1, {from: accounts[0], value: 0}, function(err, result){
+      web3.eth.getBalance(contractAddress, function(err, balance){
+        var initialContractEtherBalance = balance;
+        web3.eth.getBalance(withdrawTo, function(err, balance){
+          var initialBalance = balance;
+          contract.withdraw(withdrawTo, {from: founder, value: 0}, function(err, result){
+            web3.eth.getBalance(withdrawTo, function(err, balance){
+              var finalBalance = balance;
+              web3.eth.getBalance(contractAddress, function(err, balance){
+                var finalContractEtherBalance = balance;
+                assert.equal(err, null);
+                assert.equal(finalBalance.minus(initialBalance).equals(initialContractEtherBalance), true);
+                assert.equal(finalContractEtherBalance.equals(new BigNumber(0)), true);
+                done();
+              });
             });
           });
         });
