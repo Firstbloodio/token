@@ -21,7 +21,7 @@ if (cliOptions.help) {
   web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
   //Config
-  var solidityFile = 'FirstBloodToken.sol';
+  var solidityFile = './smart_contract/FirstBloodToken.sol';
   var contractName = 'FirstBloodToken';
 	var solcVersion = 'v0.3.6-2016-08-15-868a167';
   var address = cliOptions.address;

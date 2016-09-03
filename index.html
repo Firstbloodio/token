@@ -1,0 +1,81 @@
+<html>
+
+<head>
+  <title>Token</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/alertify.min.css">
+</head>
+
+<body>
+
+<h3>Buy token</h3>
+
+<table class="table">
+  <tbody>
+    <tr><td>Address</td><td><span id="addressSelector"></span></td></tr>
+    <tr><td>Private key (optional)</td><td><input type="text" id="pkInput" class="form-control" style="width: 300px" /></td></tr>
+    <tr><td>Buy (amount in Ether)</td><td><span class="form-inline"><input type="text" id="buyAmount" class="form-control" placeholder="0.00" style="width: 200px" /><button id="buyButton" class="btn btn-default" style="width: 100px">Buy</button></span></td></tr>
+    <tr><td>My Ether balance</td><td><span class="balance"></span></td></tr>
+    <tr><td>My 1SŦ balance</td><td><span class="balanceToken"></span></td></tr>
+  </tbody>
+</table>
+
+<h3>Token stats</h3>
+
+<div class="preSale" style="display:none">
+  <table class="table">
+    <tbody>
+      <tr><td>Smart contract address</td><td><span class="contractAddr"></span></td></tr>
+      <tr><td>Start block &#8212; End block</td><td><span class="startBlock"></span> &#8212; <span class="endBlock"></span></td></tr>
+      <tr><td>Current block</td><td><span class="currentBlock"></span></td></tr>
+      <tr><td>Crowdsale starts in</td><td><span class="countdown"></span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="duringSale" style="display:none">
+  <table class="table">
+    <tbody>
+      <tr><td>Smart contract address</td><td><span class="contractAddr"></span></td></tr>
+      <tr><td>Start block &#8212; End block</td><td><span class="startBlock"></span> &#8212; <span class="endBlock"></span></td></tr>
+      <tr><td>Current block</td><td><span class="currentBlock"></span></td></tr>
+      <tr><td>Current price</td><td><span class="currentPrice"></span></td></tr>
+      <tr><td>Next price</td><td><span class="nextPrice"></span></td></tr>
+      <tr><td>Ether raised</td><td><span class="ethRaised"></span></td></tr>
+      <tr><td>Total 1SŦ supply</td><td><span class="totalSupply"></span></td></tr>
+      <tr><td>Price increases in</td><td><span class="countdown"></span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>My transactions</h3>
+
+  <table class="table" id="myBuys">
+  </table>
+
+</div>
+
+<div class="postSale" style="display:none">
+  <table class="table">
+    <tbody>
+      <tr><td>Smart contract address</td><td><span class="contractAddr"></span></td></tr>
+      <tr><td>Ether raised</td><td><span class="ethRaised"></span></td></tr>
+      <tr><td>Total 1SŦ supply</td><td><span class="totalSupply"></span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.countdown.js"></script>
+<script src="js/alertify.min.js"></script>
+<script src="js/date.min.js"></script>
+<script src="js/async.min.js"></script>
+<script src="js/numeral.min.js"></script>
+<script src="js/web3.min.js"></script>
+<script src="js/ethereumjs-tx.js"></script>
+<script src="js/ethereumjs-wallet.js"></script>
+<script src="js/ethereum.js"></script>
+
+</body>
+
+</html>

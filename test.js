@@ -7,7 +7,7 @@ var assert = require('assert');
 var BigNumber = require('bignumber.js');
 
 //Config
-var solidityFile = 'FirstBloodToken_test.sol';
+var solidityFile = './smart_contract/FirstBloodToken_test.sol';
 var contractName = 'FirstBloodToken';
 var startBlock = 2326762; //9-26-2016 midnight UTC assuming 14 second blocks
 var endBlock = 2499819; //10-23-2016 midnight UTC assuming 14 second blocks
