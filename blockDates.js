@@ -1,7 +1,7 @@
 var request = require('request');
 
 var startDate = new Date('2016-09-26');
-var endDate = new Date('2016-10-23');
+var endDate = new Date('2016-10-24');
 var currentDate = new Date();
 var averageBlockTime = 14;
 
