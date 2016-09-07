@@ -126,6 +126,27 @@ describe('Smart contract token test ', function() {
     );
   });
 
+  it('Test buying on behalf of a recipient', function(done) {
+    var amountToBuy = web3.toWei(1, "ether");
+    contract.setBlockNumber(endBlock-10, {from: accounts[0], value: 0}, function(err, result){
+      assert.equal(err, null);
+      contract.balanceOf(accounts[2], function(err, result){
+        var initialBalance = result;
+        contract.buyRecipient(accounts[2], {from: accounts[1], value: amountToBuy}, function(err, result){
+          assert.equal(err, null);
+          contract.price(function(err, result){
+            var price = result;
+            contract.balanceOf(accounts[2], function(err, result){
+              var finalBalance = result;
+              assert.equal(finalBalance.sub(initialBalance).equals((new BigNumber(amountToBuy)).times(price)), true);
+              done();
+            });
+          });
+        });
+      });
+    });
+  });
+
   it('Test buying after the sale ends', function(done) {
     contract.setBlockNumber(endBlock+1, {from: accounts[0], value: 0}, function(err, result){
       assert.equal(err, null);

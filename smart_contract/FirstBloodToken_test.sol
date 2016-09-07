@@ -165,7 +165,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
         Buy(msg.sender, msg.value, safeMul(msg.value, price()));
     }
 
-    function buy(address recipient) {
+    function buyRecipient(address recipient) {
         if (blockNumber<startBlock || blockNumber>endBlock) throw;
         if (this.balance>etherCap) throw;
         balances[recipient] = safeAdd(balances[recipient], safeMul(msg.value, price()));
