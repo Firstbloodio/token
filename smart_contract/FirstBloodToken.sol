@@ -278,6 +278,8 @@ contract FirstBloodToken is StandardToken, SafeMath {
         if (msg.sender!=founder) throw;
         if (block.number <= endBlock) throw;
         Withdraw(msg.sender, to, this.balance);
+        // TODO: Make sure this will work with chosen multisig wallet
+        // i.e. gas limits and such - though not sure what could go wrong here
         if (!to.call.value(this.balance)()) throw;
     }
 
