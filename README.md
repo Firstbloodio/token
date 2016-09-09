@@ -1,1 +1,2 @@
-# token
+# FirstBlood Crowdsale Token
+
