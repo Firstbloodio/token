@@ -204,14 +204,16 @@ contract FirstBloodToken is StandardToken, SafeMath {
      *
      * - Integer math: ok - using SafeMath
      *
+     * - TODO: Check gas limit we stay well below 2300
      *
      */
     function buy() {
 
-        // if(halted) throw;
+        // TODO: if(halted) throw;
 
         if (block.number<startBlock || block.number>endBlock) throw;
         if (this.balance>etherCap) throw;
+        // TODO: Calculate safeMul() price only once and use local var?
         balances[msg.sender] = safeAdd(balances[msg.sender], safeMul(msg.value, price()));
         totalSupply = safeAdd(totalSupply, safeMul(msg.value, price()));
         Buy(msg.sender, msg.value, safeMul(msg.value, price()));
@@ -321,7 +323,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     /**
      * Security review
      *
-     * - TODO: Check gas limit we stay well below 230
+     * - TODO: Check gas limit we stay well below 2300
      *
      */
     function() {
