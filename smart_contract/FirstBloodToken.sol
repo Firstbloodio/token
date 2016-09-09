@@ -1,3 +1,22 @@
+/**
+ * Escape hatch plan:
+ *
+ * - This details worst case scenario regarding smart contracts. Something goes wrong in our code, or even
+ *   on Ethereum code itself and balances cannot be trusted
+ *
+ * - ETH should be continuously withdrawed to an external address to keep them safe (once a day) as founder key is not multisig
+ *
+ * - The FirstBlood token contract can be rewritten and balances reconstructed based on blockchain history data
+ *
+ * - Customers are refunded with FirstBlood token revision 2 - this could be even in a different blockchain
+ *
+ *
+ * TODO
+ *
+ * - Describe management of founder key
+ *
+ */
+
 contract SafeMath {
   //internals
 
@@ -80,6 +99,12 @@ contract StandardToken is Token {
         } else { return false; }
     }
 
+    /**
+     * Allowance allowed spending - allows pull style withdraw of tokens
+     *
+     * Reviewed:
+     * - Interger overflow = OK, checked
+     */
     function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
         //same as above. Replace this line with the following if you want to protect against wrapping uints.
         if (balances[_from] >= _value && allowed[_from][msg.sender] >= _value && balances[_to] + _value > balances[_to]) {
@@ -116,6 +141,8 @@ contract StandardToken is Token {
 
 /**
  * Security criteria evaluated against http://ethereum.stackexchange.com/questions/8551/methodological-security-review-of-a-smart-contract
+ *
+ *
  */
 contract FirstBloodToken is StandardToken, SafeMath {
     string public name = "FirstBlood Token";
@@ -173,9 +200,16 @@ contract FirstBloodToken is StandardToken, SafeMath {
     /**
      * Security review
      *
+     * - TODO: Needs halt flag that crowdfunding can be stopped by founders in the case of something goes amiss
+     *
      * - Integer math: ok - using SafeMath
+     *
+     *
      */
     function buy() {
+
+        // if(halted) throw;
+
         if (block.number<startBlock || block.number>endBlock) throw;
         if (this.balance>etherCap) throw;
         balances[msg.sender] = safeAdd(balances[msg.sender], safeMul(msg.value, price()));
@@ -232,33 +266,64 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     /**
-     * Withdraw raised ETH to certain address
+     * Withdraw raised ETH to certain address by founders once the crowdsale is over
      *
-     * Only founders can withdraw tokens?
+     * Security review
+     *
+     * - This is the only critical function - see escape hatch plan
      */
     function withdraw(address to) {
-        // TODO: Not sure what this does here
         if (msg.sender!=founder) throw;
         if (block.number <= endBlock) throw;
         Withdraw(msg.sender, to, this.balance);
         if (!to.call.value(this.balance)()) throw;
     }
 
+    /**
+     * Security review
+     *
+     * - no issues
+     */
     function changeFounder(address newFounder) {
         if (msg.sender!=founder) throw;
         founder = newFounder;
     }
 
+    /**
+     * Customers can transfer their tokens.
+     *
+     * Same as standard token contract, but predefined transferLockup lead time.
+     *
+     * Security review
+     *
+     * - Integer math: ok
+     */
     function transfer(address _to, uint256 _value) returns (bool success) {
+        // Only founders can move tokens before
         if (block.number <= endBlock + transferLockup && msg.sender!=founder) throw;
         return super.transfer(_to, _value);
     }
 
+    /**
+     * Customers can transfer their tokens.
+     *
+     * Same as standard token contract, but predefined transferLockup lead time.
+     *
+     * Security review
+     *
+     * - Integer math: ok
+     */
     function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
       if (block.number <= endBlock + transferLockup && msg.sender!=founder) throw;
       return super.transferFrom(_from, _to, _value);
     }
 
+    /**
+     * Security review
+     *
+     * - TODO: Check gas limit we stay well below 230
+     *
+     */
     function() {
         buy();
     }
