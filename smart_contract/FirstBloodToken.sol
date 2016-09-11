@@ -1,3 +1,22 @@
+/**
+ * Escape hatch plan:
+ *
+ * - This details worst case scenario regarding smart contracts. Something goes wrong in our code, or even
+ *   on Ethereum code itself and balances cannot be trusted
+ *
+ * - ETH should be continuously withdrawed to an external address to keep them safe (once a day) as founder key is not multisig
+ *
+ * - The FirstBlood token contract can be rewritten and balances reconstructed based on blockchain history data
+ *
+ * - Customers are refunded with FirstBlood token revision 2 - this could be even in a different blockchain
+ *
+ *
+ * TODO
+ *
+ * - Describe management of founder key
+ *
+ */
+
 contract SafeMath {
   //internals
 
@@ -63,6 +82,10 @@ contract Token {
 
 contract StandardToken is Token {
 
+    /**
+     * Reviewed:
+     * - Interger overflow = OK, checked
+     */
     function transfer(address _to, uint256 _value) returns (bool success) {
         //Default assumes totalSupply can't be over max (2^256 - 1).
         //If your token leaves out totalSupply and can issue more tokens as time goes on, you need to check if it doesn't wrap.
@@ -76,6 +99,12 @@ contract StandardToken is Token {
         } else { return false; }
     }
 
+    /**
+     * Allowance allowed spending - allows pull style withdraw of tokens
+     *
+     * Reviewed:
+     * - Interger overflow = OK, checked
+     */
     function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
         //same as above. Replace this line with the following if you want to protect against wrapping uints.
         if (balances[_from] >= _value && allowed[_from][msg.sender] >= _value && balances[_to] + _value > balances[_to]) {
@@ -110,6 +139,11 @@ contract StandardToken is Token {
 
 }
 
+/**
+ * Security criteria evaluated against http://ethereum.stackexchange.com/questions/8551/methodological-security-review-of-a-smart-contract
+ *
+ *
+ */
 contract FirstBloodToken is StandardToken, SafeMath {
     string public name = "FirstBlood Token";
     string public symbol = "1ST";
@@ -117,16 +151,23 @@ contract FirstBloodToken is StandardToken, SafeMath {
     uint public startBlock;
     uint public endBlock;
     address public founder = 0x0;
+
+    /* IDEA: make these numbers settable in constructor, so the contract is easier to test */
     uint public etherCap = 600000 * 10**18; //600k Ether is approximately 6.5M
     uint public transferLockup = 370285; //2 months assuming 14 second blocks
     uint public founderLockup = 2252571; //365 days assuming 14 second blocks
     uint public bountyAllocation = 2500000 * 10**18; //2.5M tokens
     uint public ecosystemAllocation = 5 * 10**16; //5%
     uint public founderAllocation = 10 * 10**16; //10%
+
+    // TODO: Comment what is this
     bool public bountyAllocated = false;
+    // TODO: Comment what is this
     bool public ecosystemAllocated = false;
     bool public founderAllocated = false;
+    // TODO: Comment what is this
     uint public presaleTokenSupply = 0;
+
     event Buy(address indexed sender, uint eth, uint fbt);
     event Withdraw(address indexed sender, address to, uint eth);
     event AllocateFounderTokens(address indexed sender);
@@ -138,6 +179,12 @@ contract FirstBloodToken is StandardToken, SafeMath {
       endBlock = endBlockInput;
     }
 
+    /**
+     * Security review
+     *
+     * - Integer overflow: does not apply, blocknumber can't grow that high
+     * - Division is the last operation and constant, should not cause issues
+     */
     function price() constant returns(uint) {
         if (block.number>=startBlock && block.number<startBlock+250) return 170; //power hour
         if (block.number<startBlock || block.number>endBlock) return 100; //default price
@@ -150,14 +197,33 @@ contract FirstBloodToken is StandardToken, SafeMath {
         return 100 + 4*(endBlock - blockNumber)/(endBlock - startBlock + 1)*67/4; //crowdsale price
     }
 
+    /**
+     * Security review
+     *
+     * - TODO: Needs halt flag that crowdfunding can be stopped by founders in the case of something goes amiss
+     *
+     * - Integer math: ok - using SafeMath
+     *
+     * - TODO: Check gas limit we stay well below 2300
+     *
+     */
     function buy() {
+
+        // TODO: if(halted) throw;
+
         if (block.number<startBlock || block.number>endBlock) throw;
         if (this.balance>etherCap) throw;
+        // TODO: Calculate safeMul() price only once and use local var?
         balances[msg.sender] = safeAdd(balances[msg.sender], safeMul(msg.value, price()));
         totalSupply = safeAdd(totalSupply, safeMul(msg.value, price()));
         Buy(msg.sender, msg.value, safeMul(msg.value, price()));
     }
 
+    /**
+     * Security review
+     *
+     * - Integer math: ok
+     */
     function buyRecipient(address recipient) {
         if (block.number<startBlock || block.number>endBlock) throw;
         if (this.balance>etherCap) throw;
@@ -166,6 +232,11 @@ contract FirstBloodToken is StandardToken, SafeMath {
         Buy(recipient, msg.value, safeMul(msg.value, price()));
     }
 
+    /**
+     * Security review
+     *
+     * - Integer math: ok
+     */
     function allocateFounderTokens() {
         if (msg.sender!=founder) throw;
         if (block.number <= endBlock + founderLockup) throw;
@@ -177,6 +248,11 @@ contract FirstBloodToken is StandardToken, SafeMath {
         AllocateFounderTokens(msg.sender);
     }
 
+    /**
+     * Security review
+     *
+     * - Integer math: ok
+     */
     function allocateBountyAndEcosystemTokens() {
       if (msg.sender!=founder) throw;
       if (block.number <= endBlock) throw;
@@ -191,28 +267,67 @@ contract FirstBloodToken is StandardToken, SafeMath {
       AllocateBountyAndEcosystemTokens(msg.sender);
     }
 
+    /**
+     * Withdraw raised ETH to certain address by founders once the crowdsale is over
+     *
+     * Security review
+     *
+     * - This is the only critical function - see escape hatch plan
+     */
     function withdraw(address to) {
         if (msg.sender!=founder) throw;
         if (block.number <= endBlock) throw;
         Withdraw(msg.sender, to, this.balance);
+        // TODO: Make sure this will work with chosen multisig wallet
+        // i.e. gas limits and such - though not sure what could go wrong here
         if (!to.call.value(this.balance)()) throw;
     }
 
+    /**
+     * Security review
+     *
+     * - no issues
+     */
     function changeFounder(address newFounder) {
         if (msg.sender!=founder) throw;
         founder = newFounder;
     }
 
+    /**
+     * Customers can transfer their tokens.
+     *
+     * Same as standard token contract, but predefined transferLockup lead time.
+     *
+     * Security review
+     *
+     * - Integer math: ok
+     */
     function transfer(address _to, uint256 _value) returns (bool success) {
+        // Only founders can move tokens before
         if (block.number <= endBlock + transferLockup && msg.sender!=founder) throw;
         return super.transfer(_to, _value);
     }
 
+    /**
+     * Customers can transfer their tokens.
+     *
+     * Same as standard token contract, but predefined transferLockup lead time.
+     *
+     * Security review
+     *
+     * - Integer math: ok
+     */
     function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
       if (block.number <= endBlock + transferLockup && msg.sender!=founder) throw;
       return super.transferFrom(_from, _to, _value);
     }
 
+    /**
+     * Security review
+     *
+     * - TODO: Check gas limit we stay well below 2300
+     *
+     */
     function() {
         buy();
     }
