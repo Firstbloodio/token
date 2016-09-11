@@ -114,19 +114,21 @@ contract FirstBloodToken is StandardToken, SafeMath {
     string public name = "FirstBlood Token";
     string public symbol = "1ST";
     uint public decimals = 18;
-    uint public startBlock;
-    uint public endBlock;
-    address public founder = 0x0;
-    uint public etherCap = 600000 * 10**18; //600k Ether is approximately 6.5M
-    uint public transferLockup = 370285; //2 months assuming 14 second blocks
-    uint public founderLockup = 2252571; //365 days assuming 14 second blocks
-    uint public bountyAllocation = 2500000 * 10**18; //2.5M tokens
-    uint public ecosystemAllocation = 5 * 10**16; //5%
-    uint public founderAllocation = 10 * 10**16; //10%
-    bool public bountyAllocated = false;
-    bool public ecosystemAllocated = false;
-    bool public founderAllocated = false;
-    uint public presaleTokenSupply = 0;
+    uint public startBlock; //crowdsale start block (set in constructor)
+    uint public endBlock; //crowdsale end block (set in constructor)
+    address public founder = 0x0; //initial founder address (set in constructor)
+    uint public etherCap = 500000 * 10**18; //max amount raised during crowdsale (500k Ether is approximately 5.5M USD)
+    uint public transferLockup = 370285; //transfers are locked for this many blocks after endBlock (assuming 14 second blocks, this is 2 months)
+    uint public founderLockup = 2252571; //founder allocation cannot be created until this many blocks after endBlock (assuming 14 second blocks, this is 1 year)
+    uint public bountyAllocation = 2500000 * 10**18; //2.5M tokens allocated post-crowdsale for the bounty fund
+    uint public ecosystemAllocation = 5 * 10**16; //5% of token supply allocated post-crowdsale for the ecosystem fund
+    uint public founderAllocation = 10 * 10**16; //10% of token supply allocated post-crowdsale for the founder allocation
+    bool public bountyAllocated = false; //this will change to true when the bounty fund is allocated
+    bool public ecosystemAllocated = false; //this will change to true when the ecosystem fund is allocated
+    bool public founderAllocated = false; //this will change to true when the founder fund is allocated
+    uint public presaleTokenSupply = 0; //this will keep track of the token supply created during the crowdsale
+    uint public presaleEtherRaised = 0; //this will keep track of the Ether raised during the crowdsale
+    bool public halted = false; //the founder address can set this to true to halt the crowdsale due to emergency
     event Buy(address indexed sender, uint eth, uint fbt);
     event Withdraw(address indexed sender, address to, uint eth);
     event AllocateFounderTokens(address indexed sender);
@@ -151,19 +153,22 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     function buy() {
-        if (block.number<startBlock || block.number>endBlock) throw;
-        if (this.balance>etherCap) throw;
-        balances[msg.sender] = safeAdd(balances[msg.sender], safeMul(msg.value, price()));
-        totalSupply = safeAdd(totalSupply, safeMul(msg.value, price()));
-        Buy(msg.sender, msg.value, safeMul(msg.value, price()));
+        if (block.number<startBlock || block.number>endBlock || presaleEtherRaised>etherCap || halted) throw;
+        uint tokens = safeMul(msg.value, price());
+        balances[msg.sender] = safeAdd(balances[msg.sender], tokens);
+        totalSupply = safeAdd(totalSupply, tokens);
+        if (!founder.call.value(msg.value)()) throw; //immediately send Ether to founder address
+        Buy(msg.sender, msg.value, tokens);
     }
 
     function buyRecipient(address recipient) {
-        if (block.number<startBlock || block.number>endBlock) throw;
-        if (this.balance>etherCap) throw;
-        balances[recipient] = safeAdd(balances[recipient], safeMul(msg.value, price()));
-        totalSupply = safeAdd(totalSupply, safeMul(msg.value, price()));
-        Buy(recipient, msg.value, safeMul(msg.value, price()));
+        if (block.number<startBlock || block.number>endBlock || presaleEtherRaised>etherCap || halted) throw;
+        uint tokens = safeMul(msg.value, price());
+        balances[recipient] = safeAdd(balances[recipient], tokens);
+        totalSupply = safeAdd(totalSupply, tokens);
+        presaleEtherRaised = safeAdd(presaleEtherRaised, msg.value);
+        if (!founder.call.value(msg.value)()) throw; //immediately send Ether to founder address
+        Buy(recipient, msg.value, tokens);
     }
 
     function allocateFounderTokens() {
@@ -178,24 +183,27 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     function allocateBountyAndEcosystemTokens() {
-      if (msg.sender!=founder) throw;
-      if (block.number <= endBlock) throw;
-      if (bountyAllocated || ecosystemAllocated) throw;
-      presaleTokenSupply = totalSupply;
-      balances[founder] = safeAdd(balances[founder], presaleTokenSupply * ecosystemAllocation / (1 ether));
-      totalSupply = safeAdd(totalSupply, presaleTokenSupply * ecosystemAllocation / (1 ether));
-      balances[founder] = safeAdd(balances[founder], bountyAllocation);
-      totalSupply = safeAdd(totalSupply, bountyAllocation);
-      bountyAllocated = true;
-      ecosystemAllocated = true;
-      AllocateBountyAndEcosystemTokens(msg.sender);
-    }
-
-    function withdraw(address to) {
         if (msg.sender!=founder) throw;
         if (block.number <= endBlock) throw;
-        Withdraw(msg.sender, to, this.balance);
-        if (!to.call.value(this.balance)()) throw;
+        if (bountyAllocated || ecosystemAllocated) throw;
+        presaleTokenSupply = totalSupply;
+        balances[founder] = safeAdd(balances[founder], presaleTokenSupply * ecosystemAllocation / (1 ether));
+        totalSupply = safeAdd(totalSupply, presaleTokenSupply * ecosystemAllocation / (1 ether));
+        balances[founder] = safeAdd(balances[founder], bountyAllocation);
+        totalSupply = safeAdd(totalSupply, bountyAllocation);
+        bountyAllocated = true;
+        ecosystemAllocated = true;
+        AllocateBountyAndEcosystemTokens(msg.sender);
+    }
+
+    function halt() {
+        if (msg.sender!=founder) throw;
+        halted = true;
+    }
+
+    function unhalt() {
+        if (msg.sender!=founder) throw;
+        halted = false;
     }
 
     function changeFounder(address newFounder) {

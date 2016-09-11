@@ -106,24 +106,33 @@ describe('Smart contract token test ', function() {
 
   it('Test buy', function(done) {
     var amountToBuy = 3;
-    async.eachSeries(testCases,
-      function(testCase, callbackEach) {
-        contract.setBlockNumber(testCase.blockNumber, {from: testCase.account, value: 0}, function(err, result){
-          assert.equal(err, null);
-          contract.buy({from: testCase.account, value: web3.toWei(amountToBuy, "ether")}, function(err, result){
+    var amountBought = 0;
+    web3.eth.getBalance(founder, function(err, result){
+      var initialBalance = result;
+      async.eachSeries(testCases,
+        function(testCase, callbackEach) {
+          contract.setBlockNumber(testCase.blockNumber, {from: testCase.account, value: 0}, function(err, result){
             assert.equal(err, null);
-            contract.balanceOf(testCase.account, function(err, result){
+            contract.buy({from: testCase.account, value: web3.toWei(amountToBuy, "ether")}, function(err, result){
               assert.equal(err, null);
-              assert.equal(result.equals(unit.times(new BigNumber(testCase.expectedPrice)).times(new BigNumber(amountToBuy))), true);
-              callbackEach();
+              amountBought += amountToBuy;
+              contract.balanceOf(testCase.account, function(err, result){
+                assert.equal(err, null);
+                assert.equal(result.equals(unit.times(new BigNumber(testCase.expectedPrice)).times(new BigNumber(amountToBuy))), true);
+                callbackEach();
+              });
             });
           });
-        });
-      },
-      function(err) {
-        done();
-      }
-    );
+        },
+        function(err) {
+          web3.eth.getBalance(founder, function(err, result){
+            var finalBalance = result;
+            assert.equal(finalBalance.minus(initialBalance).equals(unit.times(new BigNumber(amountBought))), true);
+            done();
+          });
+        }
+      );
+    });
   });
 
   it('Test buying on behalf of a recipient', function(done) {
@@ -147,6 +156,26 @@ describe('Smart contract token test ', function() {
     });
   });
 
+  it('Test halting, buying, and failing', function(done) {
+    contract.halt({from: founder, value: 0}, function(err, result){
+      assert.equal(err, null);
+      contract.buy({from: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
+        assert.equal(!err, false);
+        done();
+      });
+    });
+  });
+
+  it('Test unhalting, buying, and succeeding', function(done) {
+    contract.unhalt({from: founder, value: 0}, function(err, result){
+      assert.equal(err, null);
+      contract.buy({from: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
+        assert.equal(!err, true);
+        done();
+      });
+    });
+  });
+
   it('Test buying after the sale ends', function(done) {
     contract.setBlockNumber(endBlock+1, {from: accounts[0], value: 0}, function(err, result){
       assert.equal(err, null);
@@ -157,46 +186,10 @@ describe('Smart contract token test ', function() {
     });
   });
 
-  it('Test founder withdraw by hacker', function(done) {
-    var hacker = accounts[12];
-    var withdrawTo = accounts[12];
-    contract.withdraw(withdrawTo, {from: hacker, value: 0}, function(err, result){
-      assert.equal(!err, false);
+  it('Test contract balance is zero', function(done){
+    web3.eth.getBalance(contractAddress, function(err, balance){
+      assert.equal(balance.equals(new BigNumber(0)), true);
       done();
-    });
-  });
-
-  it('Test founder withdraw early', function(done) {
-    var withdrawTo = accounts[11];
-    contract.setBlockNumber(endBlock-1, {from: accounts[0], value: 0}, function(err, result){
-      contract.withdraw(withdrawTo, {from: founder, value: 0}, function(err, result){
-        assert.equal(!err, false);
-        done();
-      });
-    });
-  });
-
-  it('Test founder withdraw', function(done) {
-    var withdrawTo = accounts[11];
-    contract.setBlockNumber(endBlock+1, {from: accounts[0], value: 0}, function(err, result){
-      web3.eth.getBalance(contractAddress, function(err, balance){
-        var initialContractEtherBalance = balance;
-        web3.eth.getBalance(withdrawTo, function(err, balance){
-          var initialBalance = balance;
-          contract.withdraw(withdrawTo, {from: founder, value: 0}, function(err, result){
-            web3.eth.getBalance(withdrawTo, function(err, balance){
-              var finalBalance = balance;
-              web3.eth.getBalance(contractAddress, function(err, balance){
-                var finalContractEtherBalance = balance;
-                assert.equal(err, null);
-                assert.equal(finalBalance.minus(initialBalance).equals(initialContractEtherBalance), true);
-                assert.equal(finalContractEtherBalance.equals(new BigNumber(0)), true);
-                done();
-              });
-            });
-          });
-        });
-      });
     });
   });
 
