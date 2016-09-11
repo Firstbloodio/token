@@ -13,8 +13,46 @@
 
 <table class="table">
   <tbody>
-    <tr><td>Address</td><td><span id="addressSelector"></span></td></tr>
-    <tr><td>Private key (optional)</td><td><input type="text" id="pkInput" class="form-control" style="width: 300px" /></td></tr>
+    <tr><td>Smart contract address</td>
+    <td>
+      <div style="width: 300px">
+        <div class="input-group">
+          <div class="input-group-btn">
+            <a class="btn btn-default form-control contractAddrLink" target="_blank" href="#"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+          </div>
+          <input type="text" style="width: 300px;" class="form-control contractAddr" />
+          <div class="input-group-btn">
+            <button class="btn btn-default form-control" data-clipboard-target=".contractAddr"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+    </td></tr>
+    <tr><td>Smart contract QR code</td><td><span class="contractQR"></span></td></tr>
+    <tr><td>Address</td><td>
+      <div style="width: 300px">
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default form-control" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+            <ul class="dropdown-menu dropdown-menu-left" id="addressSelector">
+            </ul>
+          </div>
+          <input type="text" id="addressInput" class="form-control" style="width: 300px; display: inline;" />
+          <div class="input-group-btn">
+            <button class="btn btn-default form-control" data-clipboard-target="#addressInput"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+    </td></tr>
+    <tr><td>Private key (optional)</td><td>
+      <div style="width: 300px">
+        <div class="input-group">
+          <input type="text" id="pkInput" class="form-control" style="width: 300px" />
+          <div class="input-group-btn">
+            <button class="btn btn-default form-control" data-clipboard-target="#pkInput"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+    </td></tr>
     <tr><td>Buy (amount in Ether)</td><td><span class="form-inline"><input type="text" id="buyAmount" class="form-control" placeholder="0.00" style="width: 200px" /><button id="buyButton" class="btn btn-default" style="width: 100px">Buy</button></span></td></tr>
     <tr><td>My Ether balance</td><td><span class="balance"></span></td></tr>
     <tr><td>My 1SŦ balance</td><td><span class="balanceToken"></span></td></tr>
@@ -26,7 +64,6 @@
 <div class="preSale" style="display:none">
   <table class="table">
     <tbody>
-      <tr><td>Smart contract address</td><td><span class="contractAddr"></span></td></tr>
       <tr><td>Start block &#8212; End block</td><td><span class="startBlock"></span> &#8212; <span class="endBlock"></span></td></tr>
       <tr><td>Current block</td><td><span class="currentBlock"></span></td></tr>
       <tr><td>Crowdsale starts in</td><td><span class="countdown"></span></td></tr>
@@ -37,7 +74,6 @@
 <div class="duringSale" style="display:none">
   <table class="table">
     <tbody>
-      <tr><td>Smart contract address</td><td><span class="contractAddr"></span></td></tr>
       <tr><td>Start block &#8212; End block</td><td><span class="startBlock"></span> &#8212; <span class="endBlock"></span></td></tr>
       <tr><td>Current block</td><td><span class="currentBlock"></span></td></tr>
       <tr><td>Current price</td><td><span class="currentPrice"></span></td></tr>
@@ -66,7 +102,9 @@
 </div>
 
 <script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.countdown.js"></script>
+<script src="js/clipboard.min.js"></script>
 <script src="js/alertify.min.js"></script>
 <script src="js/date.min.js"></script>
 <script src="js/async.min.js"></script>
