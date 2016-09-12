@@ -8,6 +8,7 @@ var commandLineArgs = require('command-line-args');
 var cli = commandLineArgs([
 	{ name: 'help', alias: 'h', type: Boolean },
 	{ name: 'address', type: String },
+	{ name: 'founder', type: String },
   { name: 'start_block', type: Number},
 	{ name: 'end_block', type: Number},
 ]);
@@ -15,7 +16,7 @@ var cliOptions = cli.parse();
 
 if (cliOptions.help) {
 	console.log(cli.getUsage());
-} else {
+} else if (cliOptions.address && cliOptions.founder && cliOptions.start_block && cliOptions.end_block) {
 
   var web3 = new Web3();
   web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
@@ -23,9 +24,9 @@ if (cliOptions.help) {
   //Config
   var solidityFile = './smart_contract/FirstBloodToken.sol';
   var contractName = 'FirstBloodToken';
-	var solcVersion = 'v0.3.6-2016-08-15-868a167';
+	var solcVersion = 'v0.3.6-nightly.2016.8.15+commit.868a167';
   var address = cliOptions.address;
-  var founder = address;
+  var founder = cliOptions.founder;
   var constructTypes = ["address", "uint256", "uint256"];
   var constructArguments = [ founder, cliOptions.start_block, cliOptions.end_block ];
 
