@@ -153,13 +153,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     function buy() {
-        if (block.number<startBlock || block.number>endBlock || presaleEtherRaised>etherCap || halted) throw;
-        uint tokens = safeMul(msg.value, price());
-        balances[msg.sender] = safeAdd(balances[msg.sender], tokens);
-        totalSupply = safeAdd(totalSupply, tokens);
-        presaleEtherRaised = safeAdd(presaleEtherRaised, msg.value);
-        if (!founder.call.value(msg.value)()) throw; //immediately send Ether to founder address
-        Buy(msg.sender, msg.value, tokens);
+        buyRecipient(msg.sender);
     }
 
     function buyRecipient(address recipient) {
