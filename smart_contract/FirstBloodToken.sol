@@ -117,7 +117,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     uint public startBlock; //crowdsale start block (set in constructor)
     uint public endBlock; //crowdsale end block (set in constructor)
     address public founder = 0x0; //initial founder address (set in constructor)
-    uint public etherCap = 500000 * 10**18; //max amount raised during crowdsale (500k Ether is approximately 5.5M USD)
+    uint public etherCap = 500000 * 10**18; //max amount raised during crowdsale (5.5M USD worth of ether will be measured with market price at beginning of the crowdsale)
     uint public transferLockup = 370285; //transfers are locked for this many blocks after endBlock (assuming 14 second blocks, this is 2 months)
     uint public founderLockup = 2252571; //founder allocation cannot be created until this many blocks after endBlock (assuming 14 second blocks, this is 1 year)
     uint public bountyAllocation = 2500000 * 10**18; //2.5M tokens allocated post-crowdsale for the bounty fund
