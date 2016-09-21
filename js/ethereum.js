@@ -129,7 +129,6 @@ web3.version.getNetwork(function(err, version){
     });
     loadLogs(function(err, result){
       var logs = result;
-      console.log(logs)
       $('#myBuys').html('<tbody>'+logs.filter(function(x){return x.name=='Buy' && x.args.sender==address}).map(function(log){return '<tr><td><a href="http://'+(testnet ? 'testnet.' : '')+'etherscan.io/address/'+log.args.sender+'" class="link" target="_blank">'+log.args.sender+'</a> bought '+(numeral(web3.fromWei(log.args.fbt,'Ether')))+' FBT <a href="http://'+(testnet ? 'testnet.' : '')+'etherscan.io/tx/'+log.transactionHash+'" class="link" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a></td></tr>'}).join('')+'</tbody>');
     });
   }
@@ -270,21 +269,29 @@ web3.version.getNetwork(function(err, version){
       } else if ($('#clickwrap_agree2').val()=='false') {
         showError('Please tick both checkboxes.');
       } else {
-        var url = 'https://termsofservice.tokenmarket.net/sign';
-        var formData = {input_address: address};
-        $.post(url, formData, function(data) {
-          var sig = '0x'+data.signature;
-          var r = sig.slice(0, 66);
-          var s = '0x' + sig.slice(66, 130);
-          var v = web3.toDecimal('0x' + sig.slice(130, 132));
-          if (v!=27 && v!=28) v+=27;
-          var functionName = 'buy';
-          var args = [sig.v,sig.r,sig.s];
-          var data = contract[functionName].getData.apply(null, args);
-          // $('#buyDataGenerate').hide();
-          // $('#buyDataText').show();
-          $('#buyData').val(data);
-          $('#clickwrapModal').modal('hide');
+
+        $.ajax({
+          type: 'POST',
+          url: 'https://termsofservice.tokenmarket.net/sign',
+          crossDomain: true,
+          data: {"input_address": address},
+          dataType: 'json',
+          success: function(responseData, textStatus, jqXHR) {
+            var sig = '0x'+responseData.data.signature_payload.payload;
+            var r = responseData.data.signature_payload.r;
+            var s = responseData.data.signature_payload.s;
+            var v = responseData.data.signature_payload.v;
+            var functionName = 'buy';
+            var args = [v, r, s];
+            var data = contract[functionName].getData.apply(null, args);
+            // $('#buyDataGenerate').hide();
+            // $('#buyDataText').show();
+            $('#buyData').val(data);
+            $('#clickwrapModal').modal('hide');
+          },
+          error: function (responseData, textStatus, errorThrown) {
+            console.log("Failed", responseData);
+          }
         });
       }
   });
