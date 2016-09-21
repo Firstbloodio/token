@@ -53,6 +53,24 @@
         </div>
       </div>
     </td></tr>
+    <tr><td>Transaction data</td><td>
+      <span id="buyDataGenerate">
+        <button type="button" class="btn btn-primary btn-xs" id="showClickwrap">
+          Click to generate
+        </button>
+      </span>
+      <span id="buyDataText" style="display: none;">
+        <div style="width: 300px">
+          <div class="input-group">
+            <input type="text" style="width: 300px;" class="form-control" id="buyData" />
+            <div class="input-group-btn">
+              <button class="btn btn-default form-control" data-clipboard-target="#buyData"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
+            </div>
+          </div>
+        </div>
+      </span>
+    </td></tr>
+    <tr><td>Gas</td><td>300000</td></tr>
     <tr><td>Buy (amount in Ether)</td><td><span class="form-inline"><input type="text" id="buyAmount" class="form-control" placeholder="0.00" style="width: 200px" /><button id="buyButton" class="btn btn-default" style="width: 100px">Buy</button></span></td></tr>
     <tr><td>My Ether balance</td><td><span class="balance"></span></td></tr>
     <tr><td>My 1SŦ balance</td><td><span class="balanceToken"></span></td></tr>
@@ -100,6 +118,55 @@
   </table>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="clickwrapModal" tabindex="-1" role="dialog" aria-labelledby="clickwrapModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="clickwrapModalLabel">Agreements</h4>
+      </div>
+      <div class="modal-body">
+          <textarea style="width: 100%; height: 200px; max-height: 400px;" id="clickwrap_body1" readonly="true">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies feugiat mauris, eget sodales tortor. Nullam suscipit id nulla et efficitur. Proin feugiat sodales sapien, venenatis ultrices mauris lacinia eu. Donec condimentum ultricies magna ut blandit. Integer ipsum metus, posuere in feugiat a, iaculis eu orci. Fusce vitae odio vitae purus sodales dignissim. Sed iaculis ante sed risus fermentum, et aliquam magna efficitur. Cras a leo hendrerit, tincidunt nisi eu, eleifend lacus. Mauris ornare ligula vitae sem mattis gravida. Duis mauris nibh, eleifend eget pulvinar a, dignissim sit amet diam. Mauris dictum risus eu odio venenatis pellentesque. Phasellus malesuada, augue vitae condimentum dapibus, nisl nisl convallis felis, sit amet interdum nulla mauris id ante. Aenean eu imperdiet nunc. Phasellus ut libero non purus efficitur malesuada.
+
+Proin interdum auctor orci, at efficitur eros porttitor non. In quis porta lacus, vitae molestie massa. Duis at fringilla massa, quis porttitor erat. Morbi interdum in leo at ornare. Nulla ligula sapien, sagittis et mi nec, dignissim vehicula sapien. Integer nibh nulla, hendrerit a lacinia at, imperdiet a libero. Vivamus ligula neque, porta vel tincidunt in, aliquet vitae arcu.
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean feugiat eu neque tincidunt congue. Aenean in augue vitae odio dapibus mollis. Donec bibendum urna nec arcu ultricies molestie. Morbi at consequat lorem. Maecenas a massa scelerisque, tempor arcu ut, sagittis nisi. Sed ornare feugiat porta. Ut tincidunt varius condimentum.
+
+Phasellus sodales eleifend imperdiet. Donec eget fringilla justo. Aliquam erat volutpat. Donec at erat mi. Vivamus id leo mi. Curabitur vel purus et felis tristique mattis. Aliquam nec risus nec eros elementum varius. Nulla scelerisque quam eros, in pharetra nunc eleifend et.
+
+Fusce auctor a ex at volutpat. Curabitur ac tempor ex, vitae consequat odio. Quisque dapibus, mi id luctus cursus, mauris dui accumsan massa, mattis interdum mauris purus ut odio. Sed nec aliquet sem. Fusce arcu tellus, ornare nec sodales at, vehicula ac tortor. Vestibulum id eleifend leo. Praesent ut sapien et augue vehicula consequat vel vitae tellus. Sed tempus laoreet eros eget mollis. Curabitur luctus sit amet nisl vestibulum lacinia. Suspendisse ut odio sed lectus ultricies eleifend nec vitae tellus. Ut sed purus consectetur, ullamcorper justo in, porttitor leo. Vivamus vel consequat nisl. Mauris sit amet magna rutrum, porttitor libero in, vehicula arcu. Morbi urna lectus, porttitor vitae tincidunt at, condimentum suscipit erat. Integer tempus eros pellentesque mi ullamcorper, sit amet sagittis erat porttitor.
+          </textarea>
+
+          <div>
+            <input type="checkbox" id="clickwrap_agree1" value="false" onchange="this.value=this.checked"> I have read, understood, and agreed to the Risks Associated With 1ST And The FirstBlood Network.
+          </div>
+
+          <textarea style="width: 100%; height: 200px; max-height: 400px;" id="clickwrap_body2" readonly="true">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ultricies feugiat mauris, eget sodales tortor. Nullam suscipit id nulla et efficitur. Proin feugiat sodales sapien, venenatis ultrices mauris lacinia eu. Donec condimentum ultricies magna ut blandit. Integer ipsum metus, posuere in feugiat a, iaculis eu orci. Fusce vitae odio vitae purus sodales dignissim. Sed iaculis ante sed risus fermentum, et aliquam magna efficitur. Cras a leo hendrerit, tincidunt nisi eu, eleifend lacus. Mauris ornare ligula vitae sem mattis gravida. Duis mauris nibh, eleifend eget pulvinar a, dignissim sit amet diam. Mauris dictum risus eu odio venenatis pellentesque. Phasellus malesuada, augue vitae condimentum dapibus, nisl nisl convallis felis, sit amet interdum nulla mauris id ante. Aenean eu imperdiet nunc. Phasellus ut libero non purus efficitur malesuada.
+
+Proin interdum auctor orci, at efficitur eros porttitor non. In quis porta lacus, vitae molestie massa. Duis at fringilla massa, quis porttitor erat. Morbi interdum in leo at ornare. Nulla ligula sapien, sagittis et mi nec, dignissim vehicula sapien. Integer nibh nulla, hendrerit a lacinia at, imperdiet a libero. Vivamus ligula neque, porta vel tincidunt in, aliquet vitae arcu.
+
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean feugiat eu neque tincidunt congue. Aenean in augue vitae odio dapibus mollis. Donec bibendum urna nec arcu ultricies molestie. Morbi at consequat lorem. Maecenas a massa scelerisque, tempor arcu ut, sagittis nisi. Sed ornare feugiat porta. Ut tincidunt varius condimentum.
+
+Phasellus sodales eleifend imperdiet. Donec eget fringilla justo. Aliquam erat volutpat. Donec at erat mi. Vivamus id leo mi. Curabitur vel purus et felis tristique mattis. Aliquam nec risus nec eros elementum varius. Nulla scelerisque quam eros, in pharetra nunc eleifend et.
+
+Fusce auctor a ex at volutpat. Curabitur ac tempor ex, vitae consequat odio. Quisque dapibus, mi id luctus cursus, mauris dui accumsan massa, mattis interdum mauris purus ut odio. Sed nec aliquet sem. Fusce arcu tellus, ornare nec sodales at, vehicula ac tortor. Vestibulum id eleifend leo. Praesent ut sapien et augue vehicula consequat vel vitae tellus. Sed tempus laoreet eros eget mollis. Curabitur luctus sit amet nisl vestibulum lacinia. Suspendisse ut odio sed lectus ultricies eleifend nec vitae tellus. Ut sed purus consectetur, ullamcorper justo in, porttitor leo. Vivamus vel consequat nisl. Mauris sit amet magna rutrum, porttitor libero in, vehicula arcu. Morbi urna lectus, porttitor vitae tincidunt at, condimentum suscipit erat. Integer tempus eros pellentesque mi ullamcorper, sit amet sagittis erat porttitor.
+          </textarea>
+
+          <div>
+            <input type="checkbox" id="clickwrap_agree2" value="false" onchange="this.value=this.checked"> I have read, understood, and agreed to the FirstBlood Presale Agreement.
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="clickwrap_submit" disabled="true">I Agree</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.countdown.js"></script>
@@ -111,6 +178,7 @@
 <script src="js/web3.min.js"></script>
 <script src="js/ethereumjs-tx.js"></script>
 <script src="js/ethereumjs-wallet.js"></script>
+<script src="js/sha256.js"></script>
 <script src="js/ethereum.js"></script>
 
 </body>

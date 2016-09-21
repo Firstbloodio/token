@@ -11,9 +11,9 @@ web3.version.getNetwork(function(err, version){
   var testnet = version == "2" ? true : false;
   //OVERRIDE:
   testnet = true;
-  var contractAddr = testnet ? '0x7a2a427bff490bb1830a2aefb7d948bdafcb0d0e' : '0x0000000000000000000000000000000000000000';
-  var contractQR = testnet ? 'data:image/png;base64,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' : '';
-  var abi = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"type":"function"},{"constant":true,"inputs":[],"name":"endBlock","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"recipient","type":"address"}],"name":"buyRecipient","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"bountyAllocated","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[{"name":"blockNumber","type":"uint256"}],"name":"testPrice","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"presaleEtherRaised","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"startBlock","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[],"name":"allocateBountyAndEcosystemTokens","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"founder","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":false,"inputs":[],"name":"halt","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"etherCap","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"ecosystemAllocated","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"founderAllocation","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"founderLockup","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"newFounder","type":"address"}],"name":"changeFounder","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"type":"function"},{"constant":true,"inputs":[],"name":"founderAllocated","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"price","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[],"name":"buy","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"halted","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[],"name":"allocateFounderTokens","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"ecosystemAllocation","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"transferLockup","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"presaleTokenSupply","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[],"name":"unhalt","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"bountyAllocation","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"inputs":[{"name":"founderInput","type":"address"},{"name":"startBlockInput","type":"uint256"},{"name":"endBlockInput","type":"uint256"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"},{"indexed":false,"name":"eth","type":"uint256"},{"indexed":false,"name":"fbt","type":"uint256"}],"name":"Buy","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"},{"indexed":false,"name":"to","type":"address"},{"indexed":false,"name":"eth","type":"uint256"}],"name":"Withdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"}],"name":"AllocateFounderTokens","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"}],"name":"AllocateBountyAndEcosystemTokens","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval","type":"event"}];
+  var contractAddr = testnet ? '0xebb4bdb0075a54d41acd3c819ca67c4b6ee3f276' : '0x0000000000000000000000000000000000000000';
+  var contractQR = testnet ? 'data:image/png;base64,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' : '';
+  var abi = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"type":"function"},{"constant":true,"inputs":[],"name":"endBlock","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"bountyAllocated","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"signer","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[{"name":"blockNumber","type":"uint256"}],"name":"testPrice","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"presaleEtherRaised","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"startBlock","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[],"name":"allocateBountyAndEcosystemTokens","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"founder","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":false,"inputs":[],"name":"halt","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"etherCap","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"ecosystemAllocated","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"founderAllocation","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"founderLockup","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"newFounder","type":"address"}],"name":"changeFounder","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"type":"function"},{"constant":true,"inputs":[],"name":"founderAllocated","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"price","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"halted","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[],"name":"allocateFounderTokens","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"ecosystemAllocation","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"transferLockup","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"presaleTokenSupply","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[],"name":"unhalt","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"recipient","type":"address"},{"name":"v","type":"uint8"},{"name":"r","type":"bytes32"},{"name":"s","type":"bytes32"}],"name":"buyRecipient","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"v","type":"uint8"},{"name":"r","type":"bytes32"},{"name":"s","type":"bytes32"}],"name":"buy","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"bountyAllocation","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"inputs":[{"name":"founderInput","type":"address"},{"name":"signerInput","type":"address"},{"name":"startBlockInput","type":"uint256"},{"name":"endBlockInput","type":"uint256"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"},{"indexed":false,"name":"eth","type":"uint256"},{"indexed":false,"name":"fbt","type":"uint256"}],"name":"Buy","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"},{"indexed":false,"name":"to","type":"address"},{"indexed":false,"name":"eth","type":"uint256"}],"name":"Withdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"}],"name":"AllocateFounderTokens","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"sender","type":"address"}],"name":"AllocateBountyAndEcosystemTokens","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval","type":"event"}];
 
   //globals
   var contract = web3.eth.contract(abi).at(contractAddr);
@@ -37,6 +37,9 @@ web3.version.getNetwork(function(err, version){
   }
 
   function initDisplay(callback) {
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    });
     $('#buyButton').on("click", buy);
     $('#pkInput').on("change", inputPk);
     $('#addressInput').on("change", inputAddress);
@@ -157,6 +160,12 @@ web3.version.getNetwork(function(err, version){
     if (pk.slice(0,2)=='0x') {
       pk = pk.slice(2);
     }
+    if (address.slice(0,2)!='0x') {
+      address = '0x'+address;
+    }
+    if (address.length!=42) {
+      address = undefined;
+    }
     try {
       if (pk.length>0) {
         var fixturekey = new EthJS.Buffer.Buffer(pk, 'hex');
@@ -185,13 +194,18 @@ web3.version.getNetwork(function(err, version){
   function buy() {
     getBlockNumber(function(err, result){
       var blockNumber = result;
-      if (blockNumber<startBlock){
+      var amount = $('#buyAmount').val();
+      var data = $('#buyData').val();
+      if (!data || data=='') {
+        showError('Please generate data first.');
+      } else if (!amount || amount<=0) {
+        showError("Please specify an amount to buy.");
+      } else if (blockNumber<startBlock){
         showError("The crowdsale has not started yet.");
       } else if(blockNumber>=endBlock) {
         showError("The crowdsale is over.");
       } else {
-        var amount = $('#buyAmount').val();
-        send(address, pk, 'buy', [], amount, 200000, function(err, result){
+        send(address, pk, undefined, undefined, data, amount, 300000, function(err, result){
           if (err) {
             showError(err);
           } else {
@@ -207,6 +221,74 @@ web3.version.getNetwork(function(err, version){
       }
     });
   }
+
+  $('body').on('click', '#showClickwrap', function (e) {
+    if (!address) {
+      showError('Please select an Ethereum account first.');
+    } else {
+      $('#clickwrapModal').modal('show');
+    }
+  });
+
+  $( "#clickwrap_body1" ).scroll(function() {
+    clickwrapWatch();
+  });
+  $( "#clickwrap_body2" ).scroll(function() {
+    clickwrapWatch();
+  });
+  $( "#clickwrap_agree1" ).change(function() {
+    clickwrapWatch();
+  });
+  $( "#clickwrap_agree2" ).change(function() {
+    clickwrapWatch();
+  });
+
+  function clickwrapWatch() {
+    var area1 = $('#clickwrap_body1');
+    var area2 = $('#clickwrap_body2');
+    if (((area1.scrollTop() + area1.height()) < area1[0].scrollHeight-4)) {
+      $('#clickwrap_submit').prop('disabled', true);
+    } else if (((area2.scrollTop() + area2.height()) < area2[0].scrollHeight-4)) {
+      $('#clickwrap_submit').prop('disabled', true);
+    } else if ($('#clickwrap_agree1').val()=='false') {
+      $('#clickwrap_submit').prop('disabled', true);
+    } else if ($('#clickwrap_agree2').val()=='false') {
+      $('#clickwrap_submit').prop('disabled', true);
+    } else {
+      $('#clickwrap_submit').prop('disabled', false);
+    }
+  }
+
+  $('body').on('click', '#clickwrap_submit', function (e) {
+      e.preventDefault();
+      var area1 = $('#clickwrap_body1');
+      var area2 = $('#clickwrap_body2');
+      if (((area1.scrollTop() + area1.height()) < area1[0].scrollHeight-4)) {
+        showError('Please scroll through and read both agreements.');
+      } else if (((area2.scrollTop() + area2.height()) < area2[0].scrollHeight-4)) {
+        showError('Please scroll through and read both agreements.');
+      } else if ($('#clickwrap_agree1').val()=='false') {
+        showError('Please tick both checkboxes.');
+      } else if ($('#clickwrap_agree2').val()=='false') {
+        showError('Please tick both checkboxes.');
+      } else {
+        //TODO: pull this from API endpoint
+        var signer = '0x76a43315b5e2b16111d1cc8c9fbc377efd432dff';
+        var hash = sha256(new EthJS.Buffer.Buffer(address.slice(2),'hex')).toString();
+        sign(web3, signer, hash, function(err, sig) {
+          console.log(signer)
+          console.log(hash)
+          console.log(sig)
+          var functionName = 'buy';
+          var args = [sig.v,sig.r,sig.s];
+          var data = contract[functionName].getData.apply(null, args);
+          $('#buyDataGenerate').hide();
+          $('#buyDataText').show();
+          $('#buyData').val(data);
+          $('#clickwrapModal').modal('hide');
+        });
+      }
+  });
 
   //API:
 
@@ -352,7 +434,25 @@ web3.version.getNetwork(function(err, version){
     });
   }
 
-  function send(addr, pk, functionName, args, amount, gas, callback) {
+  function sign(web3, address, value, callback) {
+    web3.eth.sign(address, value, function(err, sig) {
+      if (!err) {
+        try {
+          var r = sig.slice(0, 66);
+          var s = '0x' + sig.slice(66, 130);
+          var v = web3.toDecimal('0x' + sig.slice(130, 132));
+          if (v!=27 && v!=28) v+=27;
+          callback(undefined, {r: r, s: s, v: v});
+        } catch (err) {
+          callback(err, undefined);
+        }
+      } else {
+        callback(err, undefined);
+      }
+    });
+  }
+
+  function send(addr, pk, functionName, args, dataOverride, amount, gas, callback) {
 
     if (!addr) {
       callback('Please select an Ethereum account.', undefined);
@@ -361,7 +461,12 @@ web3.version.getNetwork(function(err, version){
       var gasLimit = web3.toHex(gas);
       var gasPrice = web3.toHex(20000000000);
       var value = web3.toHex(web3.toWei(amount,'Ether'));
-      var data = contract[functionName].getData.apply(null, args);
+      var data = '0x0';
+      if (dataOverride) {
+        data = dataOverride;
+      } else if (functionName && args) {
+        data = contract[functionName].getData.apply(null, args);
+      }
       var to = contractAddr;
 
       getBalance(address, function(err, result){

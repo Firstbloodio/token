@@ -29,7 +29,7 @@ if (cliOptions.help) {
   var address = cliOptions.address;
   var founder = cliOptions.founder;
 	var signer = cliOptions.signer;
-  var constructTypes = ["address", "uint256", "uint256"];
+  var constructTypes = ["address", "address", "uint256", "uint256"];
   var constructArguments = [ founder, signer, cliOptions.start_block, cliOptions.end_block ];
 
 	solc.loadRemoteVersion(solcVersion, function(err, solcV) {

@@ -114,6 +114,8 @@ describe('Smart contract token test ', function() {
     async.map(testCases,
       function(testCase, callbackMap) {
         var hash = sha256(new Buffer(testCase.account.slice(2),'hex'));
+        console.log(testCase.account.slice(2))
+        console.log(hash)
         sign(web3, signer, hash, function(err, sig) {
           testCase.v = sig.v;
           testCase.r = sig.r;
