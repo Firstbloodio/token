@@ -270,13 +270,29 @@ web3.version.getNetwork(function(err, version){
       } else if ($('#clickwrap_agree2').val()=='false') {
         showError('Please tick both checkboxes.');
       } else {
-        //TODO: pull this from API endpoint
-        var signer = '0x76a43315b5e2b16111d1cc8c9fbc377efd432dff';
-        var hash = sha256(new EthJS.Buffer.Buffer(address.slice(2),'hex')).toString();
-        sign(web3, signer, hash, function(err, sig) {
-          console.log(signer)
-          console.log(hash)
-          console.log(sig)
+        // var signer = '0x76a43315b5e2b16111d1cc8c9fbc377efd432dff';
+        // var hash = sha256(new EthJS.Buffer.Buffer(address.slice(2),'hex')).toString();
+        // sign(web3, signer, hash, function(err, sig) {
+        //   console.log(signer)
+        //   console.log(hash)
+        //   console.log(sig)
+        //   var functionName = 'buy';
+        //   var args = [sig.v,sig.r,sig.s];
+        //   var data = contract[functionName].getData.apply(null, args);
+        //   $('#buyDataGenerate').hide();
+        //   $('#buyDataText').show();
+        //   $('#buyData').val(data);
+        //   $('#clickwrapModal').modal('hide');
+        // });
+        //TODO: make it work
+        var url = 'https://termsofservice.tokenmarket.net/sign';
+        var formData = {input_address: address};
+        $.post(url, formData, function(data) {
+          var sig = '0x'+data.signature;
+          var r = sig.slice(0, 66);
+          var s = '0x' + sig.slice(66, 130);
+          var v = web3.toDecimal('0x' + sig.slice(130, 132));
+          if (v!=27 && v!=28) v+=27;
           var functionName = 'buy';
           var args = [sig.v,sig.r,sig.s];
           var data = contract[functionName].getData.apply(null, args);
