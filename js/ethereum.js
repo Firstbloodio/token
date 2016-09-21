@@ -195,13 +195,13 @@ web3.version.getNetwork(function(err, version){
       var amount = $('#buyAmount').val();
       var data = $('#buyData').val();
       if (!data || data=='') {
-        showError('Please generate data first.');
+        showError('Please generate data first. &#10;请先生成阅读免责条款的数字签名！');
       } else if (!amount || amount<=0) {
-        showError("Please specify an amount to buy.");
+        showError('Please specify an amount to buy. '+'<br>'+ ' 请填写您需要兑换的数量！');
       } else if (blockNumber<startBlock){
-        showError("The crowdsale has not started yet.");
+        showError('The crowdsale has not started yet. ' +'<br>'+ '第一滴血的众筹还未开始。');
       } else if(blockNumber>=endBlock) {
-        showError("The crowdsale is over.");
+        showError('The crowdsale is over. '+'<br>'+ '对不起，本次众筹已经结束。');
       } else {
         send(address, pk, undefined, undefined, data, amount, 300000, function(err, result){
           if (err) {
@@ -222,7 +222,7 @@ web3.version.getNetwork(function(err, version){
 
   $('body').on('click', '#showClickwrap', function (e) {
     if (!address) {
-      showError('Please select an Ethereum account first.');
+      showError('Please select an Ethereum account first. '+'<br>'+ '请在［我的地址］一栏填写一个以太坊的钱包地址！');
     } else {
       $('#clickwrapModal').modal('show');
     }
