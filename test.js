@@ -5,12 +5,31 @@ var fs = require('fs');
 var async = require('async');
 var assert = require('assert');
 var BigNumber = require('bignumber.js');
+var sha256 = require('js-sha256').sha256;
 
 //Config
 var solidityFile = './smart_contract/FirstBloodToken_test.sol';
 var contractName = 'FirstBloodToken';
 var startBlock = 2326762; //9-26-2016 midnight UTC assuming 14 second blocks
 var endBlock = 2499819; //10-23-2016 midnight UTC assuming 14 second blocks
+
+function sign(web3, address, value, callback) {
+  web3.eth.sign(address, value, function(err, sig) {
+    if (!err) {
+      try {
+        var r = sig.slice(0, 66);
+        var s = '0x' + sig.slice(66, 130);
+        var v = web3.toDecimal('0x' + sig.slice(130, 132));
+        if (v!=27 && v!=28) v+=27;
+        callback(undefined, {r: r, s: s, v: v});
+      } catch (err) {
+        callback(err, undefined);
+      }
+    } else {
+      callback(err, undefined);
+    }
+  });
+}
 
 describe('Smart contract token test ', function() {
   this.timeout(240*1000);
@@ -22,6 +41,7 @@ describe('Smart contract token test ', function() {
   var testCases;
   var unit = new BigNumber(Math.pow(10,18));
   var founder;
+  var signer;
 
   before("Initialize TestRPC server", function(done) {
     web3.setProvider(TestRPC.provider({"total_accounts": 20}));
@@ -47,7 +67,8 @@ describe('Smart contract token test ', function() {
       var hasAddress = false;
       //Put constructor arguments here:
       founder = accounts[0];
-      var contractInstance = contract.new(founder, startBlock, endBlock, {from: accounts[0], gas: 4000000, data: bytecode}, function(err, myContract){
+      signer = accounts[1];
+      var contractInstance = contract.new(founder, signer, startBlock, endBlock, {from: accounts[0], gas: 4000000, data: bytecode}, function(err, myContract){
         assert.equal(err, null);
         web3.eth.getTransactionReceipt(myContract.transactionHash, function(err, result){
           assert.equal(err, null);
@@ -76,17 +97,36 @@ describe('Smart contract token test ', function() {
         //must use Math.floor to simulate Solidity's integer division
         expectedPrice = 100 + Math.floor(Math.floor(4*(endBlock - blockNumber)/(endBlock - startBlock + 1))*67/4);
       }
+      var account = accounts[i+1];
       expectedPrice = Math.round(expectedPrice);
       testCases.push(
         {
           blockNumber: blockNumber,
           expectedPrice: expectedPrice,
-          account: accounts[i+1]
+          account: account,
         }
       );
     }
-    console.log(testCases);
     done();
+  });
+
+  it('Should sign test cases', function(done) {
+    async.map(testCases,
+      function(testCase, callbackMap) {
+        var hash = sha256(new Buffer(testCase.account.slice(2),'hex'));
+        sign(web3, signer, hash, function(err, sig) {
+          testCase.v = sig.v;
+          testCase.r = sig.r;
+          testCase.s = sig.s;
+          callbackMap(null, testCase);
+        });
+      },
+      function(err, newTestCases) {
+        testCases = newTestCases;
+        console.log(testCases)
+        done();
+      }
+    );
   });
 
   it('Test price', function(done) {
@@ -113,7 +153,7 @@ describe('Smart contract token test ', function() {
         function(testCase, callbackEach) {
           contract.setBlockNumber(testCase.blockNumber, {from: testCase.account, value: 0}, function(err, result){
             assert.equal(err, null);
-            contract.buy({from: testCase.account, value: web3.toWei(amountToBuy, "ether")}, function(err, result){
+            contract.buy(testCase.v, testCase.r, testCase.s, {from: testCase.account, value: web3.toWei(amountToBuy, "ether")}, function(err, result){
               assert.equal(err, null);
               amountBought += amountToBuy;
               contract.balanceOf(testCase.account, function(err, result){
@@ -141,14 +181,17 @@ describe('Smart contract token test ', function() {
       assert.equal(err, null);
       contract.balanceOf(accounts[2], function(err, result){
         var initialBalance = result;
-        contract.buyRecipient(accounts[2], {from: accounts[1], value: amountToBuy}, function(err, result){
-          assert.equal(err, null);
-          contract.price(function(err, result){
-            var price = result;
-            contract.balanceOf(accounts[2], function(err, result){
-              var finalBalance = result;
-              assert.equal(finalBalance.sub(initialBalance).equals((new BigNumber(amountToBuy)).times(price)), true);
-              done();
+        var hash = sha256(new Buffer(accounts[1].slice(2),'hex'));
+        sign(web3, signer, hash, function(err, sig) {
+          contract.buyRecipient(accounts[2], sig.v, sig.r, sig.s, {from: accounts[1], value: amountToBuy}, function(err, result){
+            assert.equal(err, null);
+            contract.price(function(err, result){
+              var price = result;
+              contract.balanceOf(accounts[2], function(err, result){
+                var finalBalance = result;
+                assert.equal(finalBalance.sub(initialBalance).equals((new BigNumber(amountToBuy)).times(price)), true);
+                done();
+              });
             });
           });
         });
@@ -159,9 +202,12 @@ describe('Smart contract token test ', function() {
   it('Test halting, buying, and failing', function(done) {
     contract.halt({from: founder, value: 0}, function(err, result){
       assert.equal(err, null);
-      contract.buy({from: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
-        assert.equal(!err, false);
-        done();
+      var hash = sha256(new Buffer(accounts[1].slice(2),'hex'));
+      sign(web3, signer, hash, function(err, sig) {
+        contract.buy(sig.v, sig.r, sig.s, {from: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
+          assert.equal(!err, false);
+          done();
+        });
       });
     });
   });
@@ -169,9 +215,12 @@ describe('Smart contract token test ', function() {
   it('Test unhalting, buying, and succeeding', function(done) {
     contract.unhalt({from: founder, value: 0}, function(err, result){
       assert.equal(err, null);
-      contract.buy({from: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
-        assert.equal(!err, true);
-        done();
+      var hash = sha256(new Buffer(accounts[1].slice(2),'hex'));
+      sign(web3, signer, hash, function(err, sig) {
+        contract.buy(sig.v, sig.r, sig.s, {from: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
+          assert.equal(!err, true);
+          done();
+        });
       });
     });
   });
@@ -179,9 +228,12 @@ describe('Smart contract token test ', function() {
   it('Test buying after the sale ends', function(done) {
     contract.setBlockNumber(endBlock+1, {from: accounts[0], value: 0}, function(err, result){
       assert.equal(err, null);
-      contract.buy({from: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
-        assert.equal(!err, false);
-        done();
+      var hash = sha256(new Buffer(accounts[1].slice(2),'hex'));
+      sign(web3, signer, hash, function(err, sig) {
+        contract.buy(sig.v, sig.r, sig.s, {from: accounts[1], value: web3.toWei(1, "ether")}, function(err, result){
+          assert.equal(!err, false);
+          done();
+        });
       });
     });
   });

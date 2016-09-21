@@ -117,6 +117,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     uint public startBlock; //crowdsale start block (set in constructor)
     uint public endBlock; //crowdsale end block (set in constructor)
     address public founder = 0x0; //initial founder address (set in constructor)
+    address public signer = 0x0; //signer address (for clickwrap agreement)
     uint public etherCap = 500000 * 10**18; //max amount raised during crowdsale (5.5M USD worth of ether will be measured with market price at beginning of the crowdsale)
     uint public transferLockup = 370285; //transfers are locked for this many blocks after endBlock (assuming 14 second blocks, this is 2 months)
     uint public founderLockup = 2252571; //founder allocation cannot be created until this many blocks after endBlock (assuming 14 second blocks, this is 1 year)
@@ -134,10 +135,11 @@ contract FirstBloodToken is StandardToken, SafeMath {
     event AllocateFounderTokens(address indexed sender);
     event AllocateBountyAndEcosystemTokens(address indexed sender);
 
-    function FirstBloodToken(address founderInput, uint startBlockInput, uint endBlockInput) {
-      founder = founderInput;
-      startBlock = startBlockInput;
-      endBlock = endBlockInput;
+    function FirstBloodToken(address founderInput, address signerInput, uint startBlockInput, uint endBlockInput) {
+        founder = founderInput;
+        signer = signerInput;
+        startBlock = startBlockInput;
+        endBlock = endBlockInput;
     }
 
     function price() constant returns(uint) {
@@ -152,11 +154,13 @@ contract FirstBloodToken is StandardToken, SafeMath {
         return 100 + 4*(endBlock - blockNumber)/(endBlock - startBlock + 1)*67/4; //crowdsale price
     }
 
-    function buy() {
-        buyRecipient(msg.sender);
+    function buy(uint8 v, bytes32 r, bytes32 s) {
+        buyRecipient(msg.sender, v, r, s);
     }
 
-    function buyRecipient(address recipient) {
+    function buyRecipient(address recipient, uint8 v, bytes32 r, bytes32 s) {
+        bytes32 hash = sha256(msg.sender);
+        if (ecrecover(hash,v,r,s) != signer) throw;
         if (block.number<startBlock || block.number>endBlock || presaleEtherRaised>etherCap || halted) throw;
         uint tokens = safeMul(msg.value, price());
         balances[recipient] = safeAdd(balances[recipient], tokens);
@@ -212,12 +216,12 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
-      if (block.number <= endBlock + transferLockup && msg.sender!=founder) throw;
-      return super.transferFrom(_from, _to, _value);
+        if (block.number <= endBlock + transferLockup && msg.sender!=founder) throw;
+        return super.transferFrom(_from, _to, _value);
     }
 
     function() {
-        buy();
+        throw;
     }
 
 }
