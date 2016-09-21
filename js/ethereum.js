@@ -37,9 +37,7 @@ web3.version.getNetwork(function(err, version){
   }
 
   function initDisplay(callback) {
-    $(function () {
-      $('[data-toggle="tooltip"]').tooltip()
-    });
+    $("[data-toggle='tooltip']").tooltip();
     $('#buyButton').on("click", buy);
     $('#pkInput').on("change", inputPk);
     $('#addressInput').on("change", inputAddress);
