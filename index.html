@@ -54,21 +54,21 @@
       </div>
     </td></tr>
     <tr><td>Transaction data</td><td>
-      <span id="buyDataGenerate">
-        <button type="button" class="btn btn-primary btn-xs" id="showClickwrap">
-          Click to generate
-        </button>
-        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Please generate transaction data first and enter it when you are sending Ether to the smart contract. This is to confirm you have read, understood, and agreed to our Risks and Presale Agreement.">?</button>
-      </span>
-      <span id="buyDataText" style="display: none;">
-        <div style="width: 300px">
+      <span id="buyDataText" style="float: left">
+        <div style="width: 200px">
           <div class="input-group">
-            <input type="text" style="width: 300px;" class="form-control" id="buyData" />
+            <input type="text" style="width: 200px;" class="form-control" id="buyData" />
             <div class="input-group-btn">
               <button class="btn btn-default form-control" data-clipboard-target="#buyData"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
             </div>
           </div>
         </div>
+      </span>
+      <span id="buyDataGenerate" style="float: left; margin-left: 50px;">
+        <button type="button" class="btn btn-primary btn-md" id="showClickwrap">
+          Click to generate
+        </button>
+        <button type="button" class="btn btn-default btn-md" data-toggle="tooltip" data-placement="right" title="Please generate transaction data first and enter it when you are sending Ether to the smart contract. This is to confirm you have read, understood, and agreed to our Risks and Presale Agreement.">?</button>
       </span>
     </td></tr>
     <tr><td>Gas</td><td>300000</td></tr>
