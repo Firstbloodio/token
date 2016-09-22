@@ -246,13 +246,9 @@ web3.version.getNetwork(function(err, version){
   function clickwrapWatch() {
     var area1 = $('#clickwrap_body1');
     var area2 = $('#clickwrap_body2');
-    if (((area1.scrollTop() + area1.height()) < area1[0].scrollHeight-4)) {
+    if (((area1.scrollTop() + area1.height()) < area1[0].scrollHeight-4) || ((area2.scrollTop() + area2.height()) < area2[0].scrollHeight-4)) {
       $('#clickwrap_submit').prop('disabled', true);
-    } else if (((area2.scrollTop() + area2.height()) < area2[0].scrollHeight-4)) {
-      $('#clickwrap_submit').prop('disabled', true);
-    } else if ($('#clickwrap_agree1').val()=='false') {
-      $('#clickwrap_submit').prop('disabled', true);
-    } else if ($('#clickwrap_agree2').val()=='false') {
+    } else if ($('#clickwrap_agree1').val()=='false' || $('#clickwrap_agree2').val()=='false' || $('#clickwrap_agree3').val()=='false') {
       $('#clickwrap_submit').prop('disabled', true);
     } else {
       $('#clickwrap_submit').prop('disabled', false);
@@ -263,14 +259,10 @@ web3.version.getNetwork(function(err, version){
       e.preventDefault();
       var area1 = $('#clickwrap_body1');
       var area2 = $('#clickwrap_body2');
-      if (((area1.scrollTop() + area1.height()) < area1[0].scrollHeight-4)) {
+      if (((area1.scrollTop() + area1.height()) < area1[0].scrollHeight-4) || ((area2.scrollTop() + area2.height()) < area2[0].scrollHeight-4)) {
         showError('Please scroll through and read both agreements.');
-      } else if (((area2.scrollTop() + area2.height()) < area2[0].scrollHeight-4)) {
-        showError('Please scroll through and read both agreements.');
-      } else if ($('#clickwrap_agree1').val()=='false') {
-        showError('Please tick both checkboxes.');
-      } else if ($('#clickwrap_agree2').val()=='false') {
-        showError('Please tick both checkboxes.');
+      } else if ($('#clickwrap_agree1').val()=='false' || $('#clickwrap_agree2').val()=='false' || $('#clickwrap_agree3').val()=='false') {
+        showError('Please tick all checkboxes.');
       } else {
 
         $.ajax({
