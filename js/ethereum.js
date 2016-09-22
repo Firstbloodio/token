@@ -224,6 +224,8 @@ web3.version.getNetwork(function(err, version){
       showError('Please select an Ethereum account first. '+'<br>'+ '请在［我的地址］一栏填写一个以太坊的钱包地址！');
     } else {
       $('#clickwrapModal').modal('show');
+      var top = $("#right-side").scrollTop();
+      $("#right-side").css('position','fixed');
     }
   });
 
@@ -288,6 +290,8 @@ web3.version.getNetwork(function(err, version){
             // $('#buyDataText').show();
             $('#buyData').val(data);
             $('#clickwrapModal').modal('hide');
+            var top = $("body").position().top;
+            $("#right-side").css('position','relative');
           },
           error: function (responseData, textStatus, errorThrown) {
             console.log("Failed", responseData);
