@@ -23,6 +23,11 @@ contract SafeMath {
   }
 }
 
+/**
+ * ERC 20 token
+ *
+ * https://github.com/ethereum/EIPs/issues/20
+ */
 contract Token {
 
     /// @return total amount of tokens
@@ -61,8 +66,17 @@ contract Token {
 
 }
 
+/**
+ * ERC 20 token
+ *
+ * https://github.com/ethereum/EIPs/issues/20
+ */
 contract StandardToken is Token {
 
+    /**
+     * Reviewed:
+     * - Interger overflow = OK, checked
+     */
     function transfer(address _to, uint256 _value) returns (bool success) {
         //Default assumes totalSupply can't be over max (2^256 - 1).
         //If your token leaves out totalSupply and can issue more tokens as time goes on, you need to check if it doesn't wrap.
@@ -110,14 +124,31 @@ contract StandardToken is Token {
 
 }
 
+
+/**
+ * First blood crowdsale ICO contract.
+ *
+ * Security criteria evaluated against http://ethereum.stackexchange.com/questions/8551/methodological-security-review-of-a-smart-contract
+ *
+ *
+ */
 contract FirstBloodToken is StandardToken, SafeMath {
+
     string public name = "FirstBlood Token";
     string public symbol = "1ST";
     uint public decimals = 18;
     uint public startBlock; //crowdsale start block (set in constructor)
     uint public endBlock; //crowdsale end block (set in constructor)
-    address public founder = 0x0; //initial founder address (set in constructor)
-    address public signer = 0x0; //signer address (for clickwrap agreement)
+
+    // Initial founder address (set in constructor)
+    // All deposited ETH will be instantly forwarded to this address.
+    // Address is a multisig wallet.
+    address public founder = 0x0;
+
+    // signer address (for clickwrap agreement)
+    // see function() {} for comments
+    address public signer = 0x0;
+
     uint public etherCap = 500000 * 10**18; //max amount raised during crowdsale (5.5M USD worth of ether will be measured with market price at beginning of the crowdsale)
     uint public transferLockup = 370285; //transfers are locked for this many blocks after endBlock (assuming 14 second blocks, this is 2 months)
     uint public founderLockup = 2252571; //founder allocation cannot be created until this many blocks after endBlock (assuming 14 second blocks, this is 1 year)
@@ -142,22 +173,41 @@ contract FirstBloodToken is StandardToken, SafeMath {
         endBlock = endBlockInput;
     }
 
+    /**
+     * Security review
+     *
+     * - Integer overflow: does not apply, blocknumber can't grow that high
+     * - Division is the last operation and constant, should not cause issues
+     * - Price function plotted https://github.com/Firstbloodio/token/issues/2
+     */
     function price() constant returns(uint) {
         if (block.number>=startBlock && block.number<startBlock+250) return 170; //power hour
         if (block.number<startBlock || block.number>endBlock) return 100; //default price
         return 100 + 4*(endBlock - block.number)/(endBlock - startBlock + 1)*67/4; //crowdsale price
     }
 
+    // price() exposed for unit tests
     function testPrice(uint blockNumber) constant returns(uint) {
         if (blockNumber>=startBlock && blockNumber<startBlock+250) return 170; //power hour
         if (blockNumber<startBlock || blockNumber>endBlock) return 100; //default price
         return 100 + 4*(endBlock - blockNumber)/(endBlock - startBlock + 1)*67/4; //crowdsale price
     }
 
+    // Buy entry point
     function buy(uint8 v, bytes32 r, bytes32 s) {
         buyRecipient(msg.sender, v, r, s);
     }
 
+    /**
+     * Main token buy function.
+     *
+     * Security review
+     *
+     * - Integer math: ok - using SafeMath
+     *
+     * - halt flag added - ok
+     *
+     */
     function buyRecipient(address recipient, uint8 v, bytes32 r, bytes32 s) {
         bytes32 hash = sha256(msg.sender);
         if (ecrecover(hash,v,r,s) != signer) throw;
@@ -166,10 +216,22 @@ contract FirstBloodToken is StandardToken, SafeMath {
         balances[recipient] = safeAdd(balances[recipient], tokens);
         totalSupply = safeAdd(totalSupply, tokens);
         presaleEtherRaised = safeAdd(presaleEtherRaised, msg.value);
+
+        // TODO: Is there a pitfall of forwarding message value like this
         if (!founder.call.value(msg.value)()) throw; //immediately send Ether to founder address
+
         Buy(recipient, msg.value, tokens);
     }
 
+    /**
+     * Set up founder address token balance.
+     *
+     * allocateBountyAndEcosystemTokens() must be calld first.
+     *
+     * Security review
+     *
+     * - Integer math: ok - only called once with fixed parameters
+     */
     function allocateFounderTokens() {
         if (msg.sender!=founder) throw;
         if (block.number <= endBlock + founderLockup) throw;
@@ -181,6 +243,15 @@ contract FirstBloodToken is StandardToken, SafeMath {
         AllocateFounderTokens(msg.sender);
     }
 
+    /**
+     * Set up founder address token balance.
+     *
+     * Set up bounty pool.
+     *
+     * Security review
+     *
+     * - Integer math: ok - only called once with fixed parameters
+     */
     function allocateBountyAndEcosystemTokens() {
         if (msg.sender!=founder) throw;
         if (block.number <= endBlock) throw;
@@ -195,6 +266,9 @@ contract FirstBloodToken is StandardToken, SafeMath {
         AllocateBountyAndEcosystemTokens(msg.sender);
     }
 
+    /**
+     * Emergency Stop ICO.
+     */
     function halt() {
         if (msg.sender!=founder) throw;
         halted = true;
@@ -210,16 +284,36 @@ contract FirstBloodToken is StandardToken, SafeMath {
         founder = newFounder;
     }
 
+    /**
+     * ERC 20 Standard Token interface transfer function
+     *
+     * Prevent transfers until freeze period is over.
+     */
     function transfer(address _to, uint256 _value) returns (bool success) {
         if (block.number <= endBlock + transferLockup && msg.sender!=founder) throw;
         return super.transfer(_to, _value);
     }
-
+    /**
+     * ERC 20 Standard Token interface transfer function
+     *
+     * Prevent transfers until freeze period is over.
+     */
     function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
         if (block.number <= endBlock + transferLockup && msg.sender!=founder) throw;
         return super.transferFrom(_from, _to, _value);
     }
 
+    /**
+     * Do not allow direct deposits.
+     *
+     * All crowdsale depositors must have read the legal agreement.
+     * This is confirmed by having them signing the terms of service on the website.
+     * The give their crowdsale Ethereum source address on the website.
+     * Website signs this address using crowdsale private key (different from founders key).
+     * buy() takes this signature as input and rejects all deposits that do not have
+     * signature you receive after reading terms of service.
+     *
+     */
     function() {
         throw;
     }
