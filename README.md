@@ -2,10 +2,11 @@
 
 ## Tests
 
-To run tests, first install mocha:
+To run tests, first install mocha and Ethereum test dependencies:
 
-`npm install --global mocha`
+    npm install
+    npm install --global mocha
 
 Then, run the test framework:
 
-`mocah test`
+    mocha
