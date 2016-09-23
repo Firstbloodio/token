@@ -207,6 +207,14 @@ contract FirstBloodToken is StandardToken, SafeMath {
      *
      * - halt flag added - ok
      *
+     * Applicable tests:
+     *
+     * - Test halting, buying, and failing
+     * - Test buying on behalf of a recipient
+     * - Test buy
+     * - Test unhalting, buying, and succeeding
+     * - Test buying after the sale ends
+     *
      */
     function buyRecipient(address recipient, uint8 v, bytes32 r, bytes32 s) {
         bytes32 hash = sha256(msg.sender);
@@ -218,6 +226,8 @@ contract FirstBloodToken is StandardToken, SafeMath {
         presaleEtherRaised = safeAdd(presaleEtherRaised, msg.value);
 
         // TODO: Is there a pitfall of forwarding message value like this
+        // TODO: Different address for founder deposits and founder operations (halt, unhalt)
+        // as founder opeations might be easier to perform from normal geth account
         if (!founder.call.value(msg.value)()) throw; //immediately send Ether to founder address
 
         Buy(recipient, msg.value, tokens);
@@ -231,6 +241,12 @@ contract FirstBloodToken is StandardToken, SafeMath {
      * Security review
      *
      * - Integer math: ok - only called once with fixed parameters
+     *
+     * Applicable tests:
+     *
+     * - Test bounty and ecosystem allocation
+     * - Test bounty and ecosystem allocation twice
+     *
      */
     function allocateFounderTokens() {
         if (msg.sender!=founder) throw;
@@ -251,6 +267,13 @@ contract FirstBloodToken is StandardToken, SafeMath {
      * Security review
      *
      * - Integer math: ok - only called once with fixed parameters
+     *
+     * Applicable tests:
+     *
+     * - Test founder token allocation too early
+     * - Test founder token allocation on time
+     * - Test founder token allocation twice
+     *
      */
     function allocateBountyAndEcosystemTokens() {
         if (msg.sender!=founder) throw;
@@ -268,6 +291,10 @@ contract FirstBloodToken is StandardToken, SafeMath {
 
     /**
      * Emergency Stop ICO.
+     *
+     *  Applicable tests:
+     *
+     * - Test unhalting, buying, and succeeding
      */
     function halt() {
         if (msg.sender!=founder) throw;
@@ -279,6 +306,15 @@ contract FirstBloodToken is StandardToken, SafeMath {
         halted = false;
     }
 
+    /**
+     * Change founder address (where ICO ETH is being forwarded).
+     *
+     * Applicable tests:
+     *
+     * - Test founder change by hacker
+     * - Test founder change
+     * - Test founder token allocation twice
+     *
     function changeFounder(address newFounder) {
         if (msg.sender!=founder) throw;
         founder = newFounder;
@@ -288,6 +324,11 @@ contract FirstBloodToken is StandardToken, SafeMath {
      * ERC 20 Standard Token interface transfer function
      *
      * Prevent transfers until freeze period is over.
+     *
+     * Applicable tests:
+     *
+     * - Test restricted early transfer
+     * - Test transfer after restricted period
      */
     function transfer(address _to, uint256 _value) returns (bool success) {
         if (block.number <= endBlock + transferLockup && msg.sender!=founder) throw;
