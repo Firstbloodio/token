@@ -1,4 +1,11 @@
 # FirstBlood Crowdsale Token
 
-TODO: No documented way to run the tests
+## Tests
 
+To run tests, first install mocha:
+
+`npm install --global mocha`
+
+Then, run the test framework:
+
+`mocah test`
