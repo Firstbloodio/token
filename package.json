@@ -1,12 +1,12 @@
 {
   "name": "firstbloodtoken",
   "version": "1.0.0",
-  "description": "",
+  "description": "FirstBlood.io Ethereum smart contract for crowdsale and its test suite",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test"
   },
-  "author": "",
+  "author": "FirstBlood.io team",
   "dependencies": {
     "assert": "^1.4.1",
     "async": "^2.0.1",
