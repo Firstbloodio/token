@@ -1,6 +1,6 @@
 {
   "name": "firstbloodtoken",
-  "version": "1.0.0",
+  "version": "1.0.0", 
   "description": "FirstBlood.io Ethereum smart contract for crowdsale and its test suite",
   "main": "index.js",
   "scripts": {
