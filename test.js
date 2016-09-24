@@ -35,6 +35,7 @@ describe('Smart contract token test ', function() {
   this.timeout(240*1000);
   //globals
   var web3 = new Web3();
+  var port = 12345;
   var contract;
   var contractAddress;
   var accounts;
@@ -44,14 +45,14 @@ describe('Smart contract token test ', function() {
   var signer;
 
   before("Initialize TestRPC server", function(done) {
-    web3.setProvider(TestRPC.provider({"total_accounts": 20}));
+    web3.setProvider(new Web3.providers.HttpProvider("http://localhost:"+port));
     done();
   });
 
   before('Get accounts', function(done) {
     web3.eth.getAccounts(function(err, accs) {
       accounts = accs;
-      assert.equal(accounts.length, 20);
+      assert.equal(accounts.length, 10);
       done();
     });
   });
@@ -64,19 +65,19 @@ describe('Smart contract token test ', function() {
       var bytecode = output.contracts[contractName].bytecode;
 
       contract = web3.eth.contract(abi);
-      var hasAddress = false;
       //Put constructor arguments here:
       founder = accounts[0];
       signer = accounts[1];
-      var contractInstance = contract.new(founder, signer, startBlock, endBlock, {from: accounts[0], gas: 4000000, data: bytecode}, function(err, myContract){
+      doneCalled = false;
+      var contractInstance = contract.new(founder, signer, startBlock, endBlock, {from: accounts[0], gas: 3000000, data: bytecode}, function(err, myContract){
         assert.equal(err, null);
         web3.eth.getTransactionReceipt(myContract.transactionHash, function(err, result){
           assert.equal(err, null);
           assert.equal(result!=undefined, true);
           contractAddress = result.contractAddress;
           contract = web3.eth.contract(abi).at(contractAddress);
-          if (!hasAddress) done();
-          hasAddress = true;
+          if (!doneCalled) done();
+          doneCalled = true;
         });
       });
     });
@@ -85,7 +86,7 @@ describe('Smart contract token test ', function() {
   it('Set up test cases', function(done){
     var blockNumber = startBlock;
     testCases = [];
-    var numBlocks = 10;
+    var numBlocks = 8;
     for (i=0; i<numBlocks; i++) {
       var blockNumber = Math.round(startBlock + (endBlock-startBlock)*i/(numBlocks-1));
       var expectedPrice;
@@ -97,10 +98,12 @@ describe('Smart contract token test ', function() {
         //must use Math.floor to simulate Solidity's integer division
         expectedPrice = 100 + Math.floor(Math.floor(4*(endBlock - blockNumber)/(endBlock - startBlock + 1))*67/4);
       }
-      var account = accounts[i+1];
+      var accountNum = Math.max(1,Math.min(i+1, accounts.length-1));
+      var account = accounts[accountNum];
       expectedPrice = Math.round(expectedPrice);
       testCases.push(
         {
+          accountNum: accountNum,
           blockNumber: blockNumber,
           expectedPrice: expectedPrice,
           account: account,
@@ -114,8 +117,6 @@ describe('Smart contract token test ', function() {
     async.map(testCases,
       function(testCase, callbackMap) {
         var hash = sha256(new Buffer(testCase.account.slice(2),'hex'));
-        console.log(testCase.account.slice(2))
-        console.log(hash)
         sign(web3, signer, hash, function(err, sig) {
           testCase.v = sig.v;
           testCase.r = sig.r;
@@ -125,14 +126,13 @@ describe('Smart contract token test ', function() {
       },
       function(err, newTestCases) {
         testCases = newTestCases;
-        console.log(testCases)
         done();
       }
     );
   });
 
   it('Test price', function(done) {
-    async.each(testCases,
+    async.eachSeries(testCases,
       function(testCase, callbackEach) {
         contract.testPrice(testCase.blockNumber, function(err, result){
           assert.equal(err, null);

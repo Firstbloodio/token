@@ -230,9 +230,6 @@ contract FirstBloodToken is StandardToken, SafeMath {
         totalSupply = safeAdd(totalSupply, tokens);
         presaleEtherRaised = safeAdd(presaleEtherRaised, msg.value);
 
-        // TODO: Is there a pitfall of forwarding message value like this
-        // TODO: Different address for founder deposits and founder operations (halt, unhalt)
-        // as founder opeations might be easier to perform from normal geth account
         if (!founder.call.value(msg.value)()) throw; //immediately send Ether to founder address
 
         Buy(recipient, msg.value, tokens);
@@ -354,7 +351,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
      *
      * All crowdsale depositors must have read the legal agreement.
      * This is confirmed by having them signing the terms of service on the website.
-     * The give their crowdsale Ethereum source address on the website.
+     * They give their crowdsale Ethereum source address on the website.
      * Website signs this address using crowdsale private key (different from founders key).
      * buy() takes this signature as input and rejects all deposits that do not have
      * signature you receive after reading terms of service.

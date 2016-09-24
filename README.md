@@ -8,9 +8,13 @@ To run tests, first install mocha and Ethereum test dependencies:
 
     npm install
 
+Then, launch a testrpc client:
+
+    node_modules/.bin/testrpc --port 12345
+
 Then, run the test framework:
 
-    node_modules/.bin/mocha
+    node_modules/.bin/mocha test
 
 ## Contract and security analysis
 
@@ -23,4 +27,3 @@ You can [read through commented contract Solidity source code](https://github.co
 [Found issues](https://github.com/Firstbloodio/token/issues/7)
 
 [Final acceptance process](https://github.com/Firstbloodio/token/issues/3)
-
