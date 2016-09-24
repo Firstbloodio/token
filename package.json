@@ -1,19 +1,24 @@
 {
   "name": "firstbloodtoken",
   "version": "1.0.0",
-  "description": "",
+  "description": "FirstBlood.io Ethereum smart contract for crowdsale and its test suite",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test"
   },
-  "author": "",
+  "author": "FirstBlood.io team",
+  "license": "MIT",
   "dependencies": {
     "assert": "^1.4.1",
     "async": "^2.0.1",
+    "bignumber": "^1.1.0",
+    "bignumber.js": "^2.4.0",
     "command-line-args": "^2.1.6",
     "ethereumjs-abi": "^0.6.3",
     "ethereumjs-testrpc": "^2.1.0",
     "fs": "0.0.2",
+    "js-sha256": "^0.3.2",
+    "mocha": "^3.0.2",
     "request": "^2.74.0",
     "solc": "^0.3.6",
     "web3": "^0.17.0-alpha"
