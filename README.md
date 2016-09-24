@@ -2,6 +2,10 @@
 
 This is the code for the Ethereum smartcontract responsible for [FirstBlood](https://firstblood.io) crowdsale.
 
+## Terms & Disclaimer
+[1ST Presale Purchase Agreement](presale_agreement.pdf)
+[FIRSTBLOOD RISK DISCLOSURE DOCUMENT](risks_disclosure.pdf)
+
 ## Tests
 
 To run tests, first install mocha and Ethereum test dependencies:
