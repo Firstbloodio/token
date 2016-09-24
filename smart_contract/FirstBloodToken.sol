@@ -131,7 +131,7 @@ contract StandardToken is Token {
 
 
 /**
- * First blood crowdsale ICO contract.
+ * First blood crowdsale crowdsale contract.
  *
  * Security criteria evaluated against http://ethereum.stackexchange.com/questions/8551/methodological-security-review-of-a-smart-contract
  *
@@ -292,7 +292,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     /**
-     * Emergency Stop ICO.
+     * Emergency Stop crowdsale.
      *
      *  Applicable tests:
      *
@@ -309,20 +309,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     /**
-     * Emergency change founder multisig.
-     *
-     *  Applicable tests:
-     *
-     * - Test founder change by hacker, founder change
-     */
-
-    function changeFounder(address newFounder) {
-        if (msg.sender!=founder) throw;
-        founder = newFounder;
-    }
-
-    /**
-     * Change founder address (where ICO ETH is being forwarded).
+     * Change founder address (where crowdsale ETH is being forwarded).
      *
      * Applicable tests:
      *
@@ -330,6 +317,8 @@ contract FirstBloodToken is StandardToken, SafeMath {
      * - Test founder change
      * - Test founder token allocation twice
      *
+     */
+
     function changeFounder(address newFounder) {
         if (msg.sender!=founder) throw;
         founder = newFounder;

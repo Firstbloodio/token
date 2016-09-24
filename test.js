@@ -19,10 +19,11 @@ function sign(web3, address, value, callback) {
       try {
         var r = sig.slice(0, 66);
         var s = '0x' + sig.slice(66, 130);
-        var v = web3.toDecimal('0x' + sig.slice(130, 132));
+        var v = parseInt('0x' + sig.slice(130, 132), 16);
         if (v!=27 && v!=28) v+=27;
         callback(undefined, {r: r, s: s, v: v});
       } catch (err) {
+        console.log(err)
         callback(err, undefined);
       }
     } else {
@@ -114,7 +115,7 @@ describe('Smart contract token test ', function() {
   });
 
   it('Should sign test cases', function(done) {
-    async.map(testCases,
+    async.mapSeries(testCases,
       function(testCase, callbackMap) {
         var hash = sha256(new Buffer(testCase.account.slice(2),'hex'));
         sign(web3, signer, hash, function(err, sig) {
