@@ -27,11 +27,11 @@ You can [read through commented contract Solidity source code](https://github.co
 
 [Found issues](https://github.com/Firstbloodio/token/issues/7)
 
+[Final acceptance process](https://github.com/Firstbloodio/token/issues/3)
+
 ## Terms & Risk Disclosure
 
 Please read CAREFULLY read through these documents which are also available on our official site before interacting with this smart contract. 
 
-[1ST Presale Purchase Agreement](presale_agreement.pdf) <br>
+[1ST Presale Purchase Agreement](presale_agreement.pdf) <br><br>
 [FIRSTBLOOD RISK DISCLOSURE DOCUMENT](risks_disclosure.pdf)
-
-[Final acceptance process](https://github.com/Firstbloodio/token/issues/3)
