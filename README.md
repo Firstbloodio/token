@@ -16,3 +16,12 @@ Then, run the test framework:
 ## Contract and security analysis
 
 You can [read through commented contract Solidity source code](https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol).
+
+## Security analysis notes
+
+[Price curve test]()
+
+[Found issues]()
+
+[Final acceptance process]()
+

@@ -1,3 +1,6 @@
+/**
+ * Overflow aware uint math functions.
+ */
 contract SafeMath {
   //internals
 
