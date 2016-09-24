@@ -26,7 +26,7 @@ You can [read through commented contract Solidity source code](https://github.co
 
 [Price curve test](https://github.com/Firstbloodio/token/issues/2)
 
-[Found issues](https://github.com/Firstbloodio/token/issues/7)
+[Addressed issues](https://github.com/Firstbloodio/token/issues/7)
 
 [Final acceptance process](https://github.com/Firstbloodio/token/issues/3)
 
