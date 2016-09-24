@@ -55,7 +55,7 @@ if (cliOptions.help) {
 		      }
 		    });
 			} else {
-				var data = contract.new.getData(founder, signer, cliOptions.start_block, cliOptions.end_block, day_limit, {data: bytecode});
+				var data = contract.new.getData(founder, signer, cliOptions.start_block, cliOptions.end_block, {data: bytecode});
 				console.log(data);
 			}
 	  });
