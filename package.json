@@ -4,7 +4,7 @@
   "description": "FirstBlood.io Ethereum smart contract for crowdsale and its test suite",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "testrpc --port 12345 && mocha test"
   },
   "author": "FirstBlood.io team",
   "license": "MIT",
