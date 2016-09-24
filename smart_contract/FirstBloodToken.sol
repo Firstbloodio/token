@@ -154,7 +154,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     // see function() {} for comments
     address public signer = 0x0;
 
-    uint public etherCap = 500000 * 10**18; //max amount raised during crowdsale (5.5M USD worth of ether will be measured with market price at beginning of the crowdsale)
+    uint public etherCap = 465313 * 10**18; //max amount raised during crowdsale (5.5M USD worth of ether will be measured with a moving average market price at beginning of the crowdsale)
     uint public transferLockup = 370285; //transfers are locked for this many blocks after endBlock (assuming 14 second blocks, this is 2 months)
     uint public founderLockup = 2252571; //founder allocation cannot be created until this many blocks after endBlock (assuming 14 second blocks, this is 1 year)
     uint public bountyAllocation = 2500000 * 10**18; //2.5M tokens allocated post-crowdsale for the bounty fund
@@ -306,6 +306,19 @@ contract FirstBloodToken is StandardToken, SafeMath {
     function unhalt() {
         if (msg.sender!=founder) throw;
         halted = false;
+    }
+
+    /**
+     * Emergency change founder multisig.
+     *
+     *  Applicable tests:
+     *
+     * - Test founder change by hacker, founder change
+     */
+
+    function changeFounder(address newFounder) {
+        if (msg.sender!=founder) throw;
+        founder = newFounder;
     }
 
     /**

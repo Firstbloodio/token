@@ -12,6 +12,7 @@ var cli = commandLineArgs([
 	{ name: 'signer', type: String },
   { name: 'start_block', type: Number},
 	{ name: 'end_block', type: Number},
+	{ name: 'send_immediately', type: Boolean, defaultValue: false},
 ]);
 var cliOptions = cli.parse();
 
@@ -45,13 +46,18 @@ if (cliOptions.help) {
 	    var bytecode = output.contracts[contractName].bytecode;
 
 	    var contract = web3.eth.contract(abi);
-	    var contractInstance = contract.new(founder, signer, cliOptions.start_block, cliOptions.end_block, {from: address, gas: 4000000, data: bytecode}, function(err, myContract){
-	      if(!err) {
-					if (myContract.address) {
-						console.log(myContract.address);
-					}
-	      }
-	    });
+			if (cliOptions.send_immediately) {
+				var contractInstance = contract.new(founder, signer, cliOptions.start_block, cliOptions.end_block, {from: address, gas: 4000000, data: bytecode}, function(err, myContract){
+		      if(!err) {
+						if (myContract.address) {
+							console.log(myContract.address);
+						}
+		      }
+		    });
+			} else {
+				var data = contract.new.getData(founder, signer, cliOptions.start_block, cliOptions.end_block, day_limit, {data: bytecode});
+				console.log(data);
+			}
 	  });
 	});
 }
