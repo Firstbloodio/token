@@ -31,7 +31,7 @@ You can [read through commented contract Solidity source code](https://github.co
 
 ## Terms & Risk Disclosure
 
-Please read CAREFULLY read through these documents which are also available on our official site before interacting with this smart contract. 
+Please read <b>CAREFULLY</b> through these documents which are also available on our official site before interacting with this smart contract. 
 
-[1ST Presale Purchase Agreement](presale_agreement.pdf) <br><br>
+[1ST Presale Purchase Agreement](presale_agreement.pdf) <br>
 [FIRSTBLOOD RISK DISCLOSURE DOCUMENT](risks_disclosure.pdf)
