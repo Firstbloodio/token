@@ -1,7 +1,8 @@
+![Travis badge](https://travis-ci.org/Firstbloodio/token.svg?branch=master)
+
 # FirstBlood Initial Coin Offering Ethereum smartcontract
 
 This is the code for the Ethereum smartcontract responsible for [FirstBlood](https://firstblood.io) crowdsale.
-
 
 ## Tests
 
@@ -25,13 +26,13 @@ You can [read through commented contract Solidity source code](https://github.co
 
 [Price curve test](https://github.com/Firstbloodio/token/issues/2)
 
-[Found issues](https://github.com/Firstbloodio/token/issues/7)
+[Addressed issues](https://github.com/Firstbloodio/token/issues/7)
 
 [Final acceptance process](https://github.com/Firstbloodio/token/issues/3)
 
-## Terms & Risk Disclosure
+## Terms and Risk Disclosure
 
-Please read <b>CAREFULLY</b> through these documents which are also available on our official site before interacting with this smart contract. 
+Please read **CAREFULLY** through these documents which are also available on our official site before interacting with this smart contract.
 
-[1ST Presale Purchase Agreement](presale_agreement.pdf) <br>
+[1ST Presale Purchase Agreement](presale_agreement.pdf) and
 [FIRSTBLOOD RISK DISCLOSURE DOCUMENT](risks_disclosure.pdf)

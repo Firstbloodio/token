@@ -27,3 +27,7 @@ before_install:
       export LINK="gcc-4.7";
       export LINKXX="g++-4.7";
     fi
+
+script:
+  - testrpc --port 12345 &
+  - npm test

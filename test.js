@@ -52,6 +52,12 @@ describe('Smart contract token test ', function() {
 
   before('Get accounts', function(done) {
     web3.eth.getAccounts(function(err, accs) {
+
+      if(err) {
+        done(err);
+        return;
+      }
+
       accounts = accs;
       assert.equal(accounts.length, 10);
       done();
