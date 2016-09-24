@@ -30,4 +30,4 @@ before_install:
 
 script:
   - testrpc --port 12345 &
-  - node test
+  - npm test
