@@ -2,3 +2,14 @@ language: node_js
 node_js:
   - "6"
 
+# cc1plus: error: unrecognized command line option ‘-std=c++11’
+# https://travis-ci.org/Firstbloodio/token/jobs/162352873
+# https://github.com/sass/node-sass/pull/493#issuecomment-60920605
+# https://github.com/sass/node-sass/blob/master/.travis.yml
+before_install:
+  - if [ $TRAVIS_OS_NAME == "linux" ]; then
+      export CC="gcc-4.7";
+      export CXX="g++-4.7";
+      export LINK="gcc-4.7";
+      export LINKXX="g++-4.7";
+    fi
