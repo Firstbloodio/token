@@ -7,7 +7,6 @@ This is the code for the Ethereum smartcontract responsible for [FirstBlood](htt
 To run tests, first install mocha and Ethereum test dependencies:
 
     npm install
-    npm install mocha
 
 Then, run the test framework:
 
@@ -19,9 +18,9 @@ You can [read through commented contract Solidity source code](https://github.co
 
 ## Security analysis notes
 
-[Price curve test]()
+[Price curve test](https://github.com/Firstbloodio/token/issues/2)
 
-[Found issues]()
+[Found issues](https://github.com/Firstbloodio/token/issues/7)
 
-[Final acceptance process]()
+[Final acceptance process](https://github.com/Firstbloodio/token/issues/3)
 

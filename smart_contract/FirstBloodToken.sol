@@ -1,5 +1,7 @@
 /**
  * Overflow aware uint math functions.
+ *
+ * Inspired by https://github.com/MakerDAO/maker-otc/blob/master/contracts/simple_market.sol
  */
 contract SafeMath {
   //internals
