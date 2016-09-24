@@ -2,9 +2,6 @@
 
 This is the code for the Ethereum smartcontract responsible for [FirstBlood](https://firstblood.io) crowdsale.
 
-## Terms & Disclaimer
-[1ST Presale Purchase Agreement](presale_agreement.pdf)
-[FIRSTBLOOD RISK DISCLOSURE DOCUMENT](risks_disclosure.pdf)
 
 ## Tests
 
@@ -29,5 +26,12 @@ You can [read through commented contract Solidity source code](https://github.co
 [Price curve test](https://github.com/Firstbloodio/token/issues/2)
 
 [Found issues](https://github.com/Firstbloodio/token/issues/7)
+
+## Terms & Risk Disclosure
+
+Please read CAREFULLY read through these documents which are also available on our official site before interacting with this smart contract. 
+
+[1ST Presale Purchase Agreement](presale_agreement.pdf) <br>
+[FIRSTBLOOD RISK DISCLOSURE DOCUMENT](risks_disclosure.pdf)
 
 [Final acceptance process](https://github.com/Firstbloodio/token/issues/3)
