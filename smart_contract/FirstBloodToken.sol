@@ -204,22 +204,11 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     /**
-     * Main token buy function.
-     *
-     * Security review
-     *
-     * - Integer math: ok - using SafeMath
-     *
-     * - halt flag added - ok
+     * Recipient token buy function.
      *
      * Applicable tests:
      *
-     * - Test halting, buying, and failing
      * - Test buying on behalf of a recipient
-     * - Test buy
-     * - Test unhalting, buying, and succeeding
-     * - Test buying after the sale ends
-     *
      */
     function buyRecipient(address recipient, uint8 v, bytes32 r, bytes32 s) {
         bytes32 hash = sha256(msg.sender);
