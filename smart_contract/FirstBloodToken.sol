@@ -131,7 +131,7 @@ contract StandardToken is Token {
 
 
 /**
- * First blood crowdsale crowdsale contract.
+ * First blood crowdsale ICO contract.
  *
  * Security criteria evaluated against http://ethereum.stackexchange.com/questions/8551/methodological-security-review-of-a-smart-contract
  *
@@ -154,7 +154,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     // see function() {} for comments
     address public signer = 0x0;
 
-    uint public etherCap = 465313 * 10**18; //max amount raised during crowdsale (5.5M USD worth of ether will be measured with a moving average market price at beginning of the crowdsale)
+    uint public etherCap = 500000 * 10**18; //max amount raised during crowdsale (5.5M USD worth of ether will be measured with market price at beginning of the crowdsale)
     uint public transferLockup = 370285; //transfers are locked for this many blocks after endBlock (assuming 14 second blocks, this is 2 months)
     uint public founderLockup = 2252571; //founder allocation cannot be created until this many blocks after endBlock (assuming 14 second blocks, this is 1 year)
     uint public bountyAllocation = 2500000 * 10**18; //2.5M tokens allocated post-crowdsale for the bounty fund
@@ -204,11 +204,24 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     /**
-     * Recipient token buy function.
+     * Main token buy function.
+     *
+     * Buy for the sender itself or buy on the behalf of somebody else (third party address).
+     *
+     * Security review
+     *
+     * - Integer math: ok - using SafeMath
+     *
+     * - halt flag added - ok
      *
      * Applicable tests:
      *
+     * - Test halting, buying, and failing
      * - Test buying on behalf of a recipient
+     * - Test buy
+     * - Test unhalting, buying, and succeeding
+     * - Test buying after the sale ends
+     *
      */
     function buyRecipient(address recipient, uint8 v, bytes32 r, bytes32 s) {
         bytes32 hash = sha256(msg.sender);
@@ -219,6 +232,9 @@ contract FirstBloodToken is StandardToken, SafeMath {
         totalSupply = safeAdd(totalSupply, tokens);
         presaleEtherRaised = safeAdd(presaleEtherRaised, msg.value);
 
+        // TODO: Is there a pitfall of forwarding message value like this
+        // TODO: Different address for founder deposits and founder operations (halt, unhalt)
+        // as founder opeations might be easier to perform from normal geth account
         if (!founder.call.value(msg.value)()) throw; //immediately send Ether to founder address
 
         Buy(recipient, msg.value, tokens);
@@ -281,7 +297,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     /**
-     * Emergency Stop crowdsale.
+     * Emergency Stop ICO.
      *
      *  Applicable tests:
      *
@@ -298,7 +314,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
     }
 
     /**
-     * Change founder address (where crowdsale ETH is being forwarded).
+     * Change founder address (where ICO ETH is being forwarded).
      *
      * Applicable tests:
      *
@@ -306,8 +322,6 @@ contract FirstBloodToken is StandardToken, SafeMath {
      * - Test founder change
      * - Test founder token allocation twice
      *
-     */
-
     function changeFounder(address newFounder) {
         if (msg.sender!=founder) throw;
         founder = newFounder;
@@ -342,7 +356,7 @@ contract FirstBloodToken is StandardToken, SafeMath {
      *
      * All crowdsale depositors must have read the legal agreement.
      * This is confirmed by having them signing the terms of service on the website.
-     * They give their crowdsale Ethereum source address on the website.
+     * The give their crowdsale Ethereum source address on the website.
      * Website signs this address using crowdsale private key (different from founders key).
      * buy() takes this signature as input and rejects all deposits that do not have
      * signature you receive after reading terms of service.
