@@ -1,6 +1,6 @@
 ![Travis badge](https://travis-ci.org/Firstbloodio/token.svg?branch=master)
 
-# FirstBlood Initial Coin Offering Ethereum smartcontract
+# FirstBlood Crowdsale Ethereum smartcontract
 
 This is the code for the Ethereum smartcontract responsible for [FirstBlood](https://firstblood.io) crowdsale.
 
