@@ -5,7 +5,7 @@
 This is the code for the Ethereum smartcontract responsible for [FirstBlood](https://firstblood.io) crowdsale.
 
 ## Explore the Contract 
-[View on Etherscan](https://etherscan.io/token/firstblood)
+[View on etherscan.io](https://etherscan.io/token/firstblood)
 
 ## Tests
 
@@ -21,11 +21,11 @@ Then, run the test framework:
 
     node_modules/.bin/mocha test
 
-## Contract and security analysis
+## Contract and Security Analysis
 
 You can [read through commented contract Solidity source code](https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol).
 
-## Security analysis notes
+## Security Analysis Notes
 
 [Price curve test](https://github.com/Firstbloodio/token/issues/2)
 
