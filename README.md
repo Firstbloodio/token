@@ -4,6 +4,9 @@
 
 This is the code for the Ethereum smartcontract responsible for [FirstBlood](https://firstblood.io) crowdsale.
 
+## Explore the Contract 
+[View on Etherscan](https://etherscan.io/token/firstblood)
+
 ## Tests
 
 To run tests, first install mocha and Ethereum test dependencies:
