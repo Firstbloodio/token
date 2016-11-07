@@ -1,5 +1,7 @@
 ![Travis badge](https://travis-ci.org/Firstbloodio/token.svg?branch=master)
 
+<img src = "https://github.com/Firstbloodio/firstblood-www/raw/master/resources/img/main/logo_shield_b.jpg" width = "30%">
+
 # FirstBlood Crowdsale Ethereum smartcontract
 
 This is the code for the Ethereum smartcontract responsible for [FirstBlood](https://firstblood.io) crowdsale.
