@@ -1,6 +1,6 @@
 ![Travis badge](https://travis-ci.org/Firstbloodio/token.svg?branch=master)
 
-<img src = "https://github.com/Firstbloodio/firstblood-www/raw/master/resources/img/main/logo_shield_b.jpg" width = "30%">
+<img src = "https://cdn-images-1.medium.com/max/1200/1*vSRfNm_bX1C6ntGFqfFX4A.png" width = "30%">
 
 # FirstBlood Crowdsale Ethereum smartcontract
 
